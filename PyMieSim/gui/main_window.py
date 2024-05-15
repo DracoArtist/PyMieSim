@@ -37,6 +37,7 @@ class PyMieSimGUI:
         self.x_axis_label_widget = tk.StringVar(value='phi_offset')
         self.STD_axis_label_widget = tk.StringVar(value=None)
         self.STD_axis_label_widget.set(None)
+        self.widget_collection = self.collect_widgets()
 
         self.customize_notebook_style()
         self.setup_notebook()
@@ -90,6 +91,15 @@ class PyMieSimGUI:
         self.scatterer_tab = ScattererTab(self.x_axis_label_widget, self.STD_axis_label_widget, self.notebook, 'Scatterer', source_tab=self.source_tab)
         self.detector_tab = DetectorTab(self.x_axis_label_widget, self.STD_axis_label_widget, self.notebook, 'Detector')
         self.axis_tab = AxisTab(self.notebook_2, 'Axis Configuration', other_tabs=[self.source_tab, self.scatterer_tab, self.detector_tab])
+
+    def collect_widgets(self):
+        """
+        This is a collection of all the widgets of the gui. It is used for testing purposes.
+        """
+        source_widget_collection = self.source_tab.widget_collection.widgets
+        detector_widget_collection = self.detector_tab.widget_collection.widgets
+        scatterer_widget_collection = self.scatterer_tab.widget_collection.widgets
+        return [*source_widget_collection, *detector_widget_collection, *scatterer_widget_collection]
 
     def export_plot(self) -> NoReturn:
         """
@@ -215,7 +225,6 @@ class PyMieSimGUI:
 
     def update_plot(self) -> NoReturn:
         plt.close('all')
-        print(self.axis_tab.widget_collection.widgets)
         
         x_axis, y_axis, std_axis = self.x_axis_label_widget.get(), self.axis_tab.get_inputs()[0], self.STD_axis_label_widget.get()
 
