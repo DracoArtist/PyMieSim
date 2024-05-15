@@ -215,6 +215,7 @@ class PyMieSimGUI:
 
     def update_plot(self) -> NoReturn:
         plt.close('all')
+        print(self.axis_tab.widget_collection.widgets)
         
         x_axis, y_axis, std_axis = self.x_axis_label_widget.get(), self.axis_tab.get_inputs()[0], self.STD_axis_label_widget.get()
 
