@@ -128,12 +128,13 @@ class PyMieSimGUI:
         self.controls_frame = ttk.Frame(self.master)
         self.controls_frame.grid(row=1, column=0, sticky="ew")
 
-        ttk.Button(
+        calculate_button = ttk.Button(
             self.controls_frame,
             text="Calculate",
             style="Large.TButton",
             command=self.update_plot
-        ).grid(row=0, column=0, sticky="ew")
+        )
+        calculate_button.grid(row=0, column=0, sticky="ew")
 
         ttk.Button(
             self.controls_frame,
@@ -189,7 +190,7 @@ class PyMieSimGUI:
         else:
             print("No data to save. Please calculate first.")
 
-    def generate_figure(self):
+    def generate_figure(self, is_testing = False):
         """
         Generates and displays the simulation results as a plot in a new window.
         """
@@ -206,12 +207,17 @@ class PyMieSimGUI:
         self.figure = figure._mpl_figure
 
         canvas = FigureCanvasTkAgg(self.figure, master=self.new_window)
-        canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         self.toolbar = NavigationToolbar2Tk(canvas, self.new_window)
-        self.toolbar.update()
         canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        if is_testing == False:
+            canvas.draw()
+            self.toolbar.update()
+
+
+
 
     def update_plot(self) -> NoReturn:
         plt.close('all')
