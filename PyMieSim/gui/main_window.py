@@ -37,7 +37,6 @@ class PyMieSimGUI:
         self.x_axis_label_widget = tk.StringVar(value='phi_offset')
         self.STD_axis_label_widget = tk.StringVar(value=None)
         self.STD_axis_label_widget.set(None)
-        self.widget_collection = self.collect_widgets()
 
         self.customize_notebook_style()
         self.setup_notebook()
@@ -91,15 +90,6 @@ class PyMieSimGUI:
         self.scatterer_tab = ScattererTab(self.x_axis_label_widget, self.STD_axis_label_widget, self.notebook, 'Scatterer', source_tab=self.source_tab)
         self.detector_tab = DetectorTab(self.x_axis_label_widget, self.STD_axis_label_widget, self.notebook, 'Detector')
         self.axis_tab = AxisTab(self.notebook_2, 'Axis Configuration', other_tabs=[self.source_tab, self.scatterer_tab, self.detector_tab])
-
-    def collect_widgets(self):
-        """
-        This is a collection of all the widgets of the gui. It is used for testing purposes.
-        """
-        source_widget_collection = self.source_tab.widget_collection.widgets
-        detector_widget_collection = self.detector_tab.widget_collection.widgets
-        scatterer_widget_collection = self.scatterer_tab.widget_collection.widgets
-        return [*source_widget_collection, *detector_widget_collection, *scatterer_widget_collection]
 
     def export_plot(self) -> NoReturn:
         """
@@ -229,15 +219,15 @@ class PyMieSimGUI:
         x_axis, y_axis, std_axis = self.x_axis_label_widget.get(), self.axis_tab.get_inputs()[0], self.STD_axis_label_widget.get()
 
         if x_axis == std_axis:
-            tk.messagebox.showerror(title = "error", message = "X-axis cannot be equal to STD-axis.", parent = self.master)
+            #self.messagebox1 = tk.messagebox.showerror(title = "error", message = "X-axis cannot be equal to STD-axis.", parent = self.master)
             raise ValueError("X-axis cannot be equal to STD-axis.")
         
         if y_axis != "coupling" and std_axis in self.detector_tab.component_dict.keys():
-            tk.messagebox.showerror(title = "error", message = "STD-axis cannot be associated to detector if y-axis is not coupling.", parent = self.master)
+            #self.messagebox2 = tk.messagebox.showerror(title = "error", message = "STD-axis cannot be associated to detector if y-axis is not coupling.", parent = self.master)
             raise ValueError("STD-axis cannot be associated to detector if y-axis is not coupling.")
         
         if y_axis != "coupling" and x_axis in self.detector_tab.component_dict.keys():
-            tk.messagebox.showerror(title = "error", message = "x-axis cannot be associated to detector if y-axis is not coupling.", parent = self.master)
+            #self.messagebox3 = tk.messagebox.showerror(title = "error", message = "x-axis cannot be associated to detector if y-axis is not coupling.", parent = self.master)
             raise ValueError("x-axis cannot be associated to detector if y-axis is not coupling.")
 
         self.y_axis = self.axis_tab.measure_map[y_axis]

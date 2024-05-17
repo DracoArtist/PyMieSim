@@ -87,6 +87,7 @@ class RadioButtonWidget(BaseWidget):
         self.option_text = option_text
         self.tk_variable = tkinter.IntVar()
         self.options_values = options_values
+        self.can_be_axis = False
 
     def update(self):
         pass
