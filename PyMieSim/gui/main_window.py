@@ -128,34 +128,37 @@ class PyMieSimGUI:
         self.controls_frame = ttk.Frame(self.master)
         self.controls_frame.grid(row=1, column=0, sticky="ew")
 
-        calculate_button = ttk.Button(
+        self.calculate_button = ttk.Button(
             self.controls_frame,
             text="Calculate",
             style="Large.TButton",
             command=self.update_plot
         )
-        calculate_button.grid(row=0, column=0, sticky="ew")
+        self.calculate_button.grid(row=0, column=0, sticky="ew")
 
-        ttk.Button(
+        self.save_button = ttk.Button(
             self.controls_frame,
             text="Save as CSV",
             style="Large.TButton",
             command=self.save_data_as_csv
-        ).grid(row=0, column=1, sticky="ew")
+        )
+        self.save_button.grid(row=0, column=1, sticky="ew")
 
-        ttk.Button(
+        self.export_button = ttk.Button(
             self.controls_frame,
             text="Export Plot",
             style="Large.TButton",
             command=self.export_plot
-        ).grid(row=0, column=2, sticky="ew")
+        )
+        self.export_button.grid(row=0, column=2, sticky="ew")
 
-        ttk.Button(
+        self.reset_std_button = ttk.Button(
             self.controls_frame,
             text="Reset STD-axis",
             style="Large.TButton",
             command=self.reset_axis_selection
-        ).grid(row=0, column=3, sticky="ew")
+        )
+        self.reset_std_button.grid(row=0, column=3, sticky="ew")
 
     def reset_axis_selection(self):
         """
