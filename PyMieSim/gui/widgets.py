@@ -114,6 +114,7 @@ class RadioButtonWidget(BaseWidget):
     def destroy(self) -> NoReturn:
         for widget in self.tk_widgets:
             widget.destroy()
+        self.tk_label.destroy()
 
     def get_value(self):
         return self.options_values[self.tk_variable.get()]

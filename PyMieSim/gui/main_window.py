@@ -156,11 +156,11 @@ class PyMieSimGUI:
             self.controls_frame,
             text="Reset STD-axis",
             style="Large.TButton",
-            command=self.reset_axis_selection
+            command=self.reset_STDaxis_selection
         )
         self.reset_std_button.grid(row=0, column=3, sticky="ew")
 
-    def reset_axis_selection(self):
+    def reset_STDaxis_selection(self):
         """
         Allows the user to unselect the std-axis radiobuttons.
         """
@@ -193,7 +193,7 @@ class PyMieSimGUI:
         else:
             print("No data to save. Please calculate first.")
 
-    def generate_figure(self, is_testing = False):
+    def generate_figure(self):
         """
         Generates and displays the simulation results as a plot in a new window.
         """
@@ -215,9 +215,8 @@ class PyMieSimGUI:
         self.toolbar = NavigationToolbar2Tk(canvas, self.new_window)
         canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        if is_testing == False:
-            canvas.draw()
-            self.toolbar.update()
+        canvas.draw()
+        self.toolbar.update()
 
 
 
