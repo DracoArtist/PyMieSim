@@ -2,7 +2,6 @@ from pytest import raises
 import tkinter
 from PyMieSim.gui.main_window import PyMieSimGUI
 from unittest.mock import patch
-import PyMieSim.gui.main_window
 
 
 """
@@ -14,7 +13,7 @@ root.geometry("750x600")
 gui = PyMieSimGUI(root)
 
 
-def in_all_tab_combination(test_function):
+def in_all_tab_combination(test_function, mock):
     """
     This function is ment to cycle trough all combinations of tabs and generate a list of widgets with which the tests should be ran
     """
@@ -35,6 +34,8 @@ def in_all_tab_combination(test_function):
         
             
             in_all_combinations_XandStd(test_function=test_function, widgets=possible_widgets)
+    
+    assert mock.call_count == (len(possible_widgets) - 1)**2
 
 
 def in_all_combinations_XandStd(test_function, widgets):
@@ -47,30 +48,25 @@ def in_all_combinations_XandStd(test_function, widgets):
         for y_axis_widget in widgets:
             test_function(x_axis_widget, y_axis_widget)
 
+# Do another test that will test this with only one x axis
     
-@patch('PyMieSim.gui.main_window.PyMieSimGUI.update_plot')
+@patch('matplotlib.backends.backend_tkagg.FigureCanvasTkAgg.draw')
 def test_calculate_button(mock):
     """
     This function will test for all combination of x, y and std axis if there is a graph produced
     """
     def check_calculate_button(x_axis_widget, y_axis_widget):
-            x_axis_widget.tk_radio_button_1.invoke()
-            gui.calculate_button.invoke()
+        x_axis_widget.tk_radio_button_1.invoke()
+        gui.calculate_button.invoke()
             
-            mock.assert_called_once()
-            
+        try:
+            y_axis_widget.tk_radio_button_2.invoke()
 
-            """
-            try:
-                y_axis_widget.tk_radio_button_2.invoke()
+        except:
+            with raises(ValueError):
+                gui.calculate_button.invoke()
 
-                with raises(Exception):
-                    gui.calculate_button.invoke()
-            except:
-                with raises(ValueError):
-                    gui.calculate_button.invoke()
-"""
-    in_all_tab_combination(check_calculate_button)
+    in_all_tab_combination(check_calculate_button, mock=mock)
 
 
 '''def test_save_button():

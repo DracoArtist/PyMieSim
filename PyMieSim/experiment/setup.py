@@ -122,5 +122,6 @@ class Setup(object):
                 setattr(self, k, v)
 
         return Array(x_table=Table(self.x_table), y=measure)
+       
 
 # -
