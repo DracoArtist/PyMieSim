@@ -22,15 +22,16 @@ def test_calculate_button(mock):
     for x_widget in detector_widgets:
         
         x_widget.tk_radio_button_1.invoke()
-        #gui.calculate_button.invoke()
+        gui.calculate_button.invoke()
        
         with raises(ValueError):
-                x_widget.tk_radio_button_2.invoke()
-                gui.calculate_button.invoke()
+            x_widget.tk_radio_button_2.invoke()
+            gui.calculate_button.invoke()
+        
 
     assert mock.call_count == len(detector_widgets)
 
-test_calculate_button()
+#test_calculate_button()
 
 """
 We need to also mock the data from the experiment module: There are combinations of buttons that raise errors together

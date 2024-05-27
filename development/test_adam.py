@@ -1,15 +1,31 @@
-def function(**kwargs):
-    a, b, c, d = kwargs['a'], kwargs['b'], kwargs['c'], kwargs['d']
-    print(a,b,c,d)
+from pytest import raises
+import tkinter
+from PyMieSim.gui.main_window import PyMieSimGUI
+from unittest.mock import patch
 
-def wrapper(foo):
 
-    def foo_out(**kwargs):
+root = tkinter.Tk()
+root.geometry("750x600")
+gui = PyMieSimGUI(root)
 
-        foo(**kwargs, c=0, d=0)
+@patch('matplotlib.backends.backend_tkagg.FigureCanvasTkAgg.draw')
+def test_indexerror(mock):
+    detector_widgets = gui.detector_tab.widget_collection.widgets
+    std_widget = detector_widgets[3]
+    std_widget.tk_radio_button_2.invoke()
 
-    return foo_out
+    scatterer_widgets = gui.scatterer_tab.widget_collection.widgets
 
-out = wrapper(function)
+    error_count = 3
 
-out(a=1, b=2)
+    for x_widget in scatterer_widgets:
+        x_widget.tk_radio_button_1.invoke()
+        gui.calculate_button.invoke()
+
+        ''' try:
+            gui.calculate_button.invoke()
+        except:
+            with raises(IndexError):
+                gui.calculate_button.invoke()'''
+    
+    assert mock.call_count == len(scatterer_widgets)
