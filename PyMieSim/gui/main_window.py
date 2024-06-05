@@ -184,6 +184,7 @@ class PyMieSimGUI:
         """
         Triggered by the "Save as CSV" button. Opens a file dialog to save the computed data as a CSV file.
         """
+        print('------------HHHHHHHHHHHHHHHHHHHH____________')
         if hasattr(self, 'data'):
             filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
             if filepath:
