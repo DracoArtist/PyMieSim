@@ -219,9 +219,6 @@ class PyMieSimGUI:
         canvas.draw()
         self.toolbar.update()
 
-
-
-
     def update_plot(self) -> NoReturn:
         plt.close('all')
         
