@@ -6,15 +6,28 @@ from PyMieSim.gui.main_window import PyMieSimGUI
 from unittest.mock import patch, MagicMock
 
 
-@patch('PyMieSim.gui.main_window.PyMieSimGUI.figure.savefig')
-def test_export_plot_button(mock_export):
+
+
+@patch('numpy.savetxt')
+@patch('tkinter.filedialog.asksaveasfilename')
+def test_save_as_csv_button(mock_filepath, mock_save):
+    """
+    This test takes in a battery of widgets, and checks if the calculate button calls upon the draw method (i.e. creates a graph) for all the selections of x-axis buttons
+    > At the moment, 2 widgets do not work properly
+    > The testing time of this function is very long (50-60 seconds)
+    """
+
     # setting up the environment
     root = tkinter.Tk()
     root.geometry("750x600")
     gui = PyMieSimGUI(root)
 
-    widget = gui.source_tab.widget_collection.widgets[0]
-    widget.tk_radio_button_1.invoke()
-    gui.figure = MagicMock()
-    gui.export_button.invoke()
-    assert mock_export.call_count == 1
+    # mocking the necessary variables
+    gui.data = MagicMock()
+    gui.filepath = MagicMock()
+
+    # invoking the button
+    gui.save_button.invoke()
+
+    # the assertion
+    assert mock_save.call_count == 1

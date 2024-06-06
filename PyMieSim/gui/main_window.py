@@ -107,17 +107,17 @@ class PyMieSimGUI:
                 ('All files', '*.*')
             ]
 
-            filepath = filedialog.asksaveasfilename(
+            self.filepath = filedialog.asksaveasfilename(
                 defaultextension=".png",
                 filetypes=filetypes,
                 title="Save plot as..."
             )
-
+            
             # If a file was selected (i.e., dialog not cancelled)
-            if filepath:
+            if self.filepath:
                 # Save the figure using matplotlib's savefig
-                self.figure.savefig(filepath)
-                messagebox.showinfo("Export Successful", f"Plot successfully saved to {filepath}")
+                self.figure.savefig(self.filepath)
+                messagebox.showinfo("Export Successful", f"Plot successfully saved to {self.filepath}")
         else:
             messagebox.showwarning("Export Failed", "No plot available to export.")
 
@@ -184,13 +184,13 @@ class PyMieSimGUI:
         """
         Triggered by the "Save as CSV" button. Opens a file dialog to save the computed data as a CSV file.
         """
-        print('------------HHHHHHHHHHHHHHHHHHHH____________')
+
         if hasattr(self, 'data'):
-            filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
-            if filepath:
+            self.filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+            if self.filepath:
                 # Assuming self.data is a pandas DataFrame or can be converted to one
-                np.savetxt(filepath, self.data.y.values.squeeze(), delimiter=",")
-                print(f"Data saved to {filepath}")
+                np.savetxt(self.filepath, self.data.y.values.squeeze(), delimiter=",")
+                print(f"Data saved to {self.filepath}")
         else:
             print("No data to save. Please calculate first.")
 
