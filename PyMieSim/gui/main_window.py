@@ -12,6 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from PyMieSim.experiment import Setup
 
 from PyMieSim.gui import SourceTab, ScattererTab, DetectorTab, AxisTab
+from PyMieSim.gui.config import Config
 
 
 class PyMieSimGUI:
@@ -111,6 +112,13 @@ class PyMieSimGUI:
             notebook=self.notebook_2,
             label='Axis Configuration',
             other_tabs=[self.source_tab, self.scatterer_tab, self.detector_tab]
+        )
+
+        self.config = Config(
+            axis_tab=self.axis_tab,
+            source_tab=self.source_tab,
+            scatterer_tab=self.scatterer_tab,
+            detector_tab=self.detector_tab
         )
 
     def export_plot(self) -> NoReturn:
@@ -263,9 +271,9 @@ class PyMieSimGUI:
 
         self.data = self.experiment.get(self.y_axis)
 
-        self.x_axis_component = self.axis_tab.axis_mapping[x_axis]
+        self.x_axis_component = self.config.axis_mapping[x_axis]
 
-        self.STD_axis_component = None if std_axis == "None" else self.axis_tab.axis_mapping[std_axis]
+        self.STD_axis_component = None if std_axis == "None" else self.config.axis_mapping[std_axis]
 
         try:
             self.generate_figure()
