@@ -7,8 +7,8 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
-from PyMieSim.gui import SourceTab, ScattererTab, DetectorTab, AxisTab
 from PyMieSim.gui.config import Config
+from PyMieSim.gui.singleton import singleton
 
 
 class PyMieSimGUI:
@@ -31,13 +31,12 @@ class PyMieSimGUI:
         self.master.protocol("WM_DELETE_WINDOW", self.on_close)
         self.master.title("PyMieSim Graphic Interface")
         self.link_radio_button = "link"
-        self.x_axis_label_widget = tk.StringVar(value='phi_offset')
-        self.STD_axis_label_widget = tk.StringVar(value=None)
-        self.STD_axis_label_widget.set(None)
-        self.scatterer_tab_name = tk.StringVar(value='Sphere')
         self.customize_notebook_style()
-        self.setup_notebook()
+        self.setup_config()
         self.setup_controls()
+
+    def setup_config(self):
+        self.config = Config(master=self.master)
 
     def on_close(self) -> NoReturn:
         """
@@ -71,53 +70,6 @@ class PyMieSimGUI:
             "Large.TButton",
             font=('Helvetica', 18),
             padding=[20, 20]
-        )
-
-    def setup_notebook(self) -> NoReturn:
-        """
-        Sets up the notebook widget with tabs for Source, Scatterer, and Detector configurations.
-        """
-        self.notebook = ttk.Notebook(self.master)
-        self.notebook.grid(row=0, column=0, sticky="ewns")
-
-        self.notebook_2 = ttk.Notebook(self.master)
-        self.notebook_2.grid(row=2, column=0, sticky="ewns")
-
-        # Create tab instances
-        self.source_tab = SourceTab(
-            x_axis=self.x_axis_label_widget,
-            STD_axis=self.STD_axis_label_widget,
-            notebook=self.notebook,
-            label='Source'
-        )
-
-        self.scatterer_tab = ScattererTab(
-            x_axis=self.x_axis_label_widget,
-            STD_axis=self.STD_axis_label_widget,
-            scatterer_tab_name=self.scatterer_tab_name,
-            notebook=self.notebook,
-            label='Scatterer',
-            source_tab=self.source_tab
-        )
-
-        self.detector_tab = DetectorTab(
-            x_axis=self.x_axis_label_widget,
-            STD_axis=self.STD_axis_label_widget,
-            notebook=self.notebook,
-            label='Detector'
-        )
-
-        self.axis_tab = AxisTab(
-            notebook=self.notebook_2,
-            label='Axis Configuration'
-        )
-
-        self.config = Config(
-            axis_tab=self.axis_tab,
-            source_tab=self.source_tab,
-            scatterer_tab=self.scatterer_tab,
-            detector_tab=self.detector_tab,
-            master=self.master
         )
 
     # The following section of the class defines the control buttons and their respective commands
@@ -167,10 +119,9 @@ class PyMieSimGUI:
         then it generates the figure
         """
 
-        self.config.calculate_plot(
-            x_axis_label_widget=self.x_axis_label_widget,
-            STD_axis_label_widget=self.STD_axis_label_widget,
-        )
+        self.config.calculate_plot()
+
+        print(singleton.x_axis_label_widget.get())
 
         try:
             self.config.generate_figure()
@@ -183,11 +134,12 @@ class PyMieSimGUI:
         Triggered by the "Save as CSV" button. Opens a file dialog to save the computed data as a CSV file.
         """
 
-        if hasattr(self, 'data'):
+        if hasattr(singleton, 'data'):
             self.filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
             if self.filepath:
-                # Assuming self.data is a pandas DataFrame or can be converted to one
-                np.savetxt(self.filepath, self.data.y.values.squeeze(), delimiter=",")
+
+                # Assuming singleton.data is a pandas DataFrame or can be converted to one
+                np.savetxt(self.filepath, singleton.data.y.values.squeeze(), delimiter=",")
                 print(f"Data saved to {self.filepath}")
         else:
             print("No data to save. Please calculate first.")
@@ -198,7 +150,7 @@ class PyMieSimGUI:
         then saves the plot to the specified location.
         """
         # Ensure there's a plot to save
-        if hasattr(self, 'figure'):
+        if hasattr(singleton, 'figure'):
             # Open file dialog to choose file name and type
             filetypes = [
                 ('PNG files', '*.png'),
@@ -217,7 +169,7 @@ class PyMieSimGUI:
             # If a file was selected (i.e., dialog not cancelled)
             if self.filepath:
                 # Save the figure using matplotlib's savefig
-                self.figure.savefig(self.filepath)
+                singleton.figure.savefig(self.filepath)
                 messagebox.showinfo("Export Successful", f"Plot successfully saved to {self.filepath}")
         else:
             messagebox.showwarning("Export Failed", "No plot available to export.")
@@ -226,6 +178,6 @@ class PyMieSimGUI:
         """
         Allows the user to unselect the std-axis radiobuttons.
         """
-        self.STD_axis_label_widget.set(None)
+        singleton.STD_axis_label_widget.set(None)
 
 # -

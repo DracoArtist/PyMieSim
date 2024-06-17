@@ -9,6 +9,8 @@ from PyMieSim.gui.widgets import InputWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
+from PyMieSim.gui.singleton import singleton
+from PyMieSim.gui.axis_tab import AxisTab
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))
@@ -18,8 +20,7 @@ class ScattererTab(BaseTab):
     to choose between different scatterer types (Sphere, Cylinder, CoreShell) and set relevant
     parameters like dimensions and refractive indices.
 
-    Attributes:
-        x_axis (tkinter.StringVar): empty.
+
         STD_axis (tkinter.StringVar): empty.
         source_tab (BaseTab): Reference to the source tab for source component configurations.
 
@@ -29,10 +30,7 @@ class ScattererTab(BaseTab):
         frame (ttk.Frame): The frame serving as the container for the tab's contents.
         main_window: Reference to the main window of the application, if applicable.
     """
-    x_axis: tkinter.StringVar
-    STD_axis: tkinter.StringVar
-    scatterer_tab_name: tkinter.StringVar
-    source_tab: BaseTab
+    axis_tab: AxisTab
 
     def __post_init__(self) -> NoReturn:
         """
@@ -80,14 +78,20 @@ class ScattererTab(BaseTab):
         Args:
             event: The event that triggered this method (default is None).
         """
-        scatterer_type = self.type_widget.get().lower()
-        setup_method = getattr(self, f"setup_{scatterer_type}_widgets", None)
-        self.scatterer_tab_name.set(self.type_widget.get())
+        # Changing axis tab
+        scatterer_type = self.type_widget.get()
+        setup_method = getattr(self, f"setup_{scatterer_type.lower()}_widgets", None)
+
         self.widget_collection.clear_widgets()
         if callable(setup_method):
             setup_method()
         else:
             raise ValueError(f"Unsupported scatterer type: {scatterer_type}")
+
+        # Changing y_axis options in accordance
+        scatterer_type_class = getattr(scatterer, scatterer_type)
+        singleton.measure_map = getattr(scatterer_type_class, 'available_measure_list')
+        self.axis_tab.update()
 
     def setup_sphere_widgets(self) -> NoReturn:
         """
@@ -96,9 +100,9 @@ class ScattererTab(BaseTab):
         self.widget_collection = WidgetCollection(frame=self.frame)
 
         self.widget_collection.add_widgets(
-            InputWidget(default_value='500', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Diameter [nm]', component_label='diameter', multiplicative_factor=1e-9, dtype=float),
-            InputWidget(default_value='1.4', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Refractive Index', component_label='index', dtype=float),
-            InputWidget(default_value='1.0', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Medium Refractive Index', component_label='medium_index', dtype=float)
+            InputWidget(default_value='500', label='Diameter [nm]', component_label='diameter', multiplicative_factor=1e-9, dtype=float),
+            InputWidget(default_value='1.4', label='Refractive Index', component_label='index', dtype=float),
+            InputWidget(default_value='1.0', label='Medium Refractive Index', component_label='medium_index', dtype=float)
         )
         self.widget_collection.setup_widgets()
         self.setup_sphere_component()
@@ -110,9 +114,9 @@ class ScattererTab(BaseTab):
         self.widget_collection = WidgetCollection(frame=self.frame)
 
         self.widget_collection.add_widgets(
-            InputWidget(default_value='1000', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Diameter [nm]', component_label='diameter', multiplicative_factor=1e-9, dtype=float),
-            InputWidget(default_value='1.4', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Refractive Index', component_label='index', dtype=complex),
-            InputWidget(default_value='1.0', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Medium Refractive Index', component_label='medium_index', dtype=float)
+            InputWidget(default_value='1000', label='Diameter [nm]', component_label='diameter', multiplicative_factor=1e-9, dtype=float),
+            InputWidget(default_value='1.4', label='Refractive Index', component_label='index', dtype=complex),
+            InputWidget(default_value='1.0', label='Medium Refractive Index', component_label='medium_index', dtype=float)
         )
         self.widget_collection.setup_widgets()
         self.setup_cylinder_component()
@@ -124,11 +128,11 @@ class ScattererTab(BaseTab):
         self.widget_collection = WidgetCollection(frame=self.frame)
 
         self.widget_collection.add_widgets(
-            InputWidget(default_value='1000', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Core Diameter [nm]', component_label='core_diameter', multiplicative_factor=1e-9, dtype=float),
-            InputWidget(default_value='200', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Shell Width [nm]', component_label='shell_width', multiplicative_factor=1e-9, dtype=float),
-            InputWidget(default_value='1.4', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Core Refractive Index', component_label='core_index', dtype=complex),
-            InputWidget(default_value='1.4', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Shell Refractive Index', component_label='shell_index', dtype=complex),
-            InputWidget(default_value='1.0', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Medium Refractive Index', component_label='medium_index', dtype=float)
+            InputWidget(default_value='1000', label='Core Diameter [nm]', component_label='core_diameter', multiplicative_factor=1e-9, dtype=float),
+            InputWidget(default_value='200', label='Shell Width [nm]', component_label='shell_width', multiplicative_factor=1e-9, dtype=float),
+            InputWidget(default_value='1.4', label='Core Refractive Index', component_label='core_index', dtype=complex),
+            InputWidget(default_value='1.4', label='Shell Refractive Index', component_label='shell_index', dtype=complex),
+            InputWidget(default_value='1.0', label='Medium Refractive Index', component_label='medium_index', dtype=float)
         )
         self.widget_collection.setup_widgets()
         self.setup_coreshell_component()
@@ -151,14 +155,14 @@ class ScattererTab(BaseTab):
 
     def setup_sphere_component(self) -> NoReturn:
         kwargs = self.widget_collection.to_component_dict()
-        self.component = scatterer.Sphere(**kwargs, source=self.source_tab.component)
+        self.component = scatterer.Sphere(**kwargs, source=singleton.source_component)
 
     def setup_cylinder_component(self) -> NoReturn:
         kwargs = self.widget_collection.to_component_dict()
-        self.component = scatterer.Cylinder(**kwargs, source=self.source_tab.component)
+        self.component = scatterer.Cylinder(**kwargs, source=singleton.source_component)
 
     def setup_coreshell_component(self) -> NoReturn:
         kwargs = self.widget_collection.to_component_dict()
-        self.component = scatterer.CoreShell(**kwargs, source=self.source_tab.component)
+        self.component = scatterer.CoreShell(**kwargs, source=singleton.source_component)
 
 # -

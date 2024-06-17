@@ -8,6 +8,7 @@ from PyMieSim.gui.widgets import ComBoxWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
+from PyMieSim.gui.singleton import singleton
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))
@@ -40,7 +41,7 @@ class AxisTab(BaseTab):
         variables for the x-axis, y-axis, and an optional standard deviation (STD) axis.
         """
 
-        self.y_axis_options = list(self.measure_map.keys())
+        self.y_axis_options = list(singleton.measure_map.keys())
 
         self.widget_collection = WidgetCollection(frame=self.frame)
 
@@ -49,5 +50,10 @@ class AxisTab(BaseTab):
         )
 
         self.widget_collection.setup_widgets(title_bar=False)
+
+    def update(self):
+        self.widget_collection.clear_widgets()
+
+        self.setup()
 
 # -
