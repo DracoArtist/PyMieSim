@@ -31,6 +31,7 @@ class ScattererTab(BaseTab):
     """
     x_axis: tkinter.StringVar
     STD_axis: tkinter.StringVar
+    scatterer_tab_name: tkinter.StringVar
     source_tab: BaseTab
 
     def __post_init__(self) -> NoReturn:
@@ -81,6 +82,7 @@ class ScattererTab(BaseTab):
         """
         scatterer_type = self.type_widget.get().lower()
         setup_method = getattr(self, f"setup_{scatterer_type}_widgets", None)
+        self.scatterer_tab_name.set(self.type_widget.get())
         self.widget_collection.clear_widgets()
         if callable(setup_method):
             setup_method()
