@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from typing import NoReturn
+
 from PyMieSim.gui.base_tab import BaseTab
 from PyMieSim.gui.widgets import ComBoxWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
+from PyMieSim.gui.singleton import datashelf
+
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import datashelf
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))

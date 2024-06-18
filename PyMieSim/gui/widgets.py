@@ -4,9 +4,11 @@
 from typing import Union, NoReturn, List
 import numpy
 import tkinter
+
+from PyMieSim.gui.singleton import datashelf
+
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import datashelf
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))

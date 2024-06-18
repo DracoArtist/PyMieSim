@@ -1,10 +1,11 @@
-from PyMieSim.gui import SourceTab, ScattererTab, DetectorTab, AxisTab
 from typing import Dict, NoReturn
 import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk, messagebox
-from PyMieSim.experiment import Setup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+
+from PyMieSim.gui import SourceTab, ScattererTab, DetectorTab, AxisTab
+from PyMieSim.experiment import Setup
 from PyMieSim.gui.singleton import datashelf
 
 

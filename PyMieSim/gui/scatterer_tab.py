@@ -3,14 +3,16 @@
 
 from typing import NoReturn
 import tkinter
+
 from PyMieSim.experiment import scatterer
 from PyMieSim.gui.base_tab import BaseTab
 from PyMieSim.gui.widgets import InputWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
+from PyMieSim.gui.axis_tab import AxisTab
+from PyMieSim.gui.singleton import datashelf
+
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import datashelf
-from PyMieSim.gui.axis_tab import AxisTab
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))

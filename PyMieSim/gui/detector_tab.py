@@ -3,10 +3,12 @@
 
 from typing import NoReturn
 from tkinter import ttk, StringVar
+
 from PyMieSim.experiment.detector import Photodiode, CoherentMode
 from PyMieSim.gui.base_tab import BaseTab
 from PyMieSim.gui.widgets import InputWidget, RadioButtonWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
+
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
 

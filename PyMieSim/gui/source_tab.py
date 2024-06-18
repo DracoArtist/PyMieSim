@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from typing import NoReturn
+
 from PyMieSim.experiment.source import Gaussian
 from PyMieSim.gui.base_tab import BaseTab
 from PyMieSim.gui.widgets import InputWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
+from PyMieSim.gui.singleton import datashelf
+
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import datashelf
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))
@@ -45,7 +47,7 @@ class SourceTab(BaseTab):
 
         self.widget_collection.add_widgets(
             InputWidget(default_value='1310', label='Wavelength [nm]', component_label='wavelength', multiplicative_factor=1e-9, dtype=float),
-            InputWidget(default_value='0', label='Polarization angle [degree]', component_label='polarization_value', dtype=float),
+            InputWidget(default_value='0', label='Polarization angle [degree]', component_label='polarization', dtype=float),
             InputWidget(default_value='1.0', label='Optical Power [mW] [fix]', component_label='optical_power',
                         multiplicative_factor=1e-3, can_be_axis=False, dtype=float),  # If can_be_axis is false, then will not put the yo widget!
             InputWidget(default_value='0.2', label='Numerical Aperture (NA) [fix]', component_label='NA', can_be_axis=False, dtype=float),
