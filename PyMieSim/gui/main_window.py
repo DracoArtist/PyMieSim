@@ -118,6 +118,12 @@ class PyMieSimGUI:
         Starts off by calculating all the data needed to create the plot,
         then it generates the figure
         """
+        # Deleting any remaining data and figure from singleton, before calculating new ones
+        try:
+            del singleton.figure
+            del singleton.data
+        except AttributeError:
+            pass
 
         self.config.calculate_plot()
 

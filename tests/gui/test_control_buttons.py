@@ -46,7 +46,7 @@ def calculate_button(mock_messagebox, mock_plot, gui, y_axis_index, source_widge
 
         assert mock_plot.call_count == 1, f"calculate_button with x-axis selection '{x_widget.tk_radio_button_1['value']}' did not call the draw"
 
-        for position in random_list(0, len(possible_widgets) - 1):  # This will make a test for 3 random std_axis selection (doing them all takes too much computational time)
+        for position in range(3):  # This will make a test for 3 random std_axis selection (doing them all takes too much computational time)
             mock_plot.reset_mock()
 
             std_widget = possible_widgets[position]

@@ -15,7 +15,7 @@ class Config:
         singleton.x_axis_label_widget = tk.StringVar(value='phi_offset')
         singleton.STD_axis_label_widget = tk.StringVar(value=None)
         singleton.STD_axis_label_widget.set(None)
-        singleton.scatterer_tab_name = tk.StringVar(value='Sphere')
+        #singleton.scatterer_tab_name = tk.StringVar(value='Sphere')
         self.setup_notebook()
 
     def setup_notebook(self) -> NoReturn:
@@ -78,31 +78,43 @@ class Config:
             detector=self.detector_tab.component
         )
 
+    def validate_axis_choice(self):
+        if self.x_axis == self.std_axis:
+            return "Warning: x-axis cannot be equal to STD-axis."
+
+        if self.y_axis_selection != "coupling" and self.std_axis in self.detector_tab.component_dict.keys():
+            return "Warning: STD-axis cannot be associated to detector if y-axis is not coupling."
+
+        if self.y_axis_selection != "coupling" and self.x_axis in self.detector_tab.component_dict.keys():
+            return "Warning: x-axis cannot be associated to detector if y-axis is not coupling."
+
+        return True
+
     def calculate_plot(self) -> NoReturn:
         # Closing all previous plots
         plt.close('all')
 
         # Defining the axis'
-        x_axis = singleton.x_axis_label_widget.get()
-        std_axis = singleton.STD_axis_label_widget.get()
-        y_axis_selection = self.axis_tab.get_inputs()[0]
+        self.x_axis = singleton.x_axis_label_widget.get()
+        self.std_axis = singleton.STD_axis_label_widget.get()
+        self.y_axis_selection = self.axis_tab.get_inputs()[0]
 
         # Checking if axis selection is valid
-        validation = singleton.validate_axis_choice(y_axis_selection=y_axis_selection)
+        validation = self.validate_axis_choice()
         if validation is not True:
             self.messagebox = messagebox.showerror(title="error", message=validation, parent=self.master)
             raise ValueError(validation)
 
         # Setting up the data and the components
-        y_axis = self.axis_tab.measure_map[y_axis_selection]
+        y_axis = self.axis_tab.measure_map[self.y_axis_selection]
 
         self.setup_experiment()
 
         singleton.data = self.experiment.get(y_axis)
 
-        self.x_axis_component = self.axis_mapping[x_axis]
+        self.x_axis_component = self.axis_mapping[self.x_axis]
 
-        self.STD_axis_component = None if std_axis == "None" else self.axis_mapping[std_axis]
+        self.STD_axis_component = None if self.std_axis == "None" else self.axis_mapping[self.std_axis]
 
     def generate_figure(self):
         """

@@ -22,8 +22,6 @@ class DetectorTab(BaseTab):
 
     Attributes:
         variables (WidgetCollection): A collection of widgets for detector configuration.
-        x_axis (tkinter.StringVar): empty.
-        STD_axis (tkinter.StringVar): empty.
 
     Inherited attributes:
         notebook (ttk.Notebook): The notebook widget this tab is part of.
