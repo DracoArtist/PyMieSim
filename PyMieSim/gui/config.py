@@ -106,7 +106,7 @@ class Config:
             raise ValueError(validation)
 
         # Setting up the data and the components
-        y_axis = self.axis_tab.measure_map[self.y_axis_selection]
+        y_axis = singleton.measure_map[self.y_axis_selection]
 
         self.setup_experiment()
 
