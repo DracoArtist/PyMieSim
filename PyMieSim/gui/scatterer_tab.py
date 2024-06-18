@@ -20,9 +20,8 @@ class ScattererTab(BaseTab):
     to choose between different scatterer types (Sphere, Cylinder, CoreShell) and set relevant
     parameters like dimensions and refractive indices.
 
-
-        STD_axis (tkinter.StringVar): empty.
-        source_tab (BaseTab): Reference to the source tab for source component configurations.
+    Attribute:
+        axis_tab (AxisTab): Used to update the y axis selection in the axis tab when the scatterer changes
 
     Inherited attributes:
         notebook (ttk.Notebook): The notebook widget this tab is part of.
