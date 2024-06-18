@@ -15,7 +15,7 @@ class Config:
         singleton.x_axis_label_widget = tk.StringVar(value='phi_offset')
         singleton.STD_axis_label_widget = tk.StringVar(value=None)
         singleton.STD_axis_label_widget.set(None)
-        #singleton.scatterer_tab_name = tk.StringVar(value='Sphere')
+        singleton.scatterer_tab_name = tk.StringVar(value='Sphere')
         self.setup_notebook()
 
     def setup_notebook(self) -> NoReturn:
