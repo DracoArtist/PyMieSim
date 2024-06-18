@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from typing import NoReturn
-from PyMieSim.experiment import scatterer
 from PyMieSim.gui.base_tab import BaseTab
 from PyMieSim.gui.widgets import ComBoxWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import singleton
+from PyMieSim.gui.singleton import datashelf
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))
@@ -26,7 +25,6 @@ class AxisTab(BaseTab):
         frame (ttk.Frame): The frame serving as the container for the tab's contents.
         main_window: Reference to the main window of the application, if applicable.
     """
-    measure_map = scatterer.Sphere.available_measure_list  # Note: this list should be updated with the specific scatterer tab selected, instead of always using the sphere
 
     def __post_init__(self) -> NoReturn:
         """
@@ -41,7 +39,7 @@ class AxisTab(BaseTab):
         variables for the x-axis, y-axis, and an optional standard deviation (STD) axis.
         """
 
-        self.y_axis_options = list(singleton.measure_map.keys())
+        self.y_axis_options = list(datashelf.measure_map.keys())
 
         self.widget_collection = WidgetCollection(frame=self.frame)
 

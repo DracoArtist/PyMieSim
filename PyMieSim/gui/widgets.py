@@ -6,7 +6,7 @@ import numpy
 import tkinter
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import singleton
+from PyMieSim.gui.singleton import datashelf
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))
@@ -156,9 +156,9 @@ class InputWidget(BaseWidget):
 
         # Adds the radiobuttons used to select wether this variable is used as an axis
         if self.can_be_axis:
-            self.tk_radio_button_1 = tkinter.Radiobutton(self.frame, variable=singleton.x_axis_label_widget, value=self.component_label)
+            self.tk_radio_button_1 = tkinter.Radiobutton(self.frame, variable=datashelf.x_axis_label_widget, value=self.component_label)
             self.tk_radio_button_1.grid(row=row + 1, column=2, sticky="W", pady=2)
-            self.tk_radio_button_2 = tkinter.Radiobutton(self.frame, variable=singleton.STD_axis_label_widget, value=self.component_label)
+            self.tk_radio_button_2 = tkinter.Radiobutton(self.frame, variable=datashelf.STD_axis_label_widget, value=self.component_label)
             self.tk_radio_button_2.grid(row=row + 1, column=3, sticky="W", pady=2)
 
     def get_value(self):

@@ -9,7 +9,7 @@ from PyMieSim.gui.widgets import InputWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import singleton
+from PyMieSim.gui.singleton import datashelf
 from PyMieSim.gui.axis_tab import AxisTab
 
 
@@ -90,7 +90,7 @@ class ScattererTab(BaseTab):
 
         # Changing y_axis options in accordance
         scatterer_type_class = getattr(scatterer, scatterer_type)
-        singleton.measure_map = getattr(scatterer_type_class, 'available_measure_list')
+        datashelf.measure_map = getattr(scatterer_type_class, 'available_measure_list')
         self.axis_tab.update()
 
     def setup_sphere_widgets(self) -> NoReturn:
@@ -155,14 +155,15 @@ class ScattererTab(BaseTab):
 
     def setup_sphere_component(self) -> NoReturn:
         kwargs = self.widget_collection.to_component_dict()
-        self.component = scatterer.Sphere(**kwargs, source=singleton.source_component)
+        self.component = scatterer.Sphere(**kwargs, source=datashelf.source_component)
 
     def setup_cylinder_component(self) -> NoReturn:
         kwargs = self.widget_collection.to_component_dict()
-        self.component = scatterer.Cylinder(**kwargs, source=singleton.source_component)
+        self.component = scatterer.Cylinder(**kwargs, source=datashelf.source_component)
 
     def setup_coreshell_component(self) -> NoReturn:
         kwargs = self.widget_collection.to_component_dict()
-        self.component = scatterer.CoreShell(**kwargs, source=singleton.source_component)
+        self.component = scatterer.CoreShell(**kwargs, source=datashelf.source_component)
+
 
 # -

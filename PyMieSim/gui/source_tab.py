@@ -8,7 +8,7 @@ from PyMieSim.gui.widgets import InputWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
-from PyMieSim.gui.singleton import singleton
+from PyMieSim.gui.singleton import datashelf
 
 
 @dataclass(kw_only=True, config=ConfigDict(arbitrary_types_allowed=True))
@@ -67,6 +67,6 @@ class SourceTab(BaseTab):
         kwargs["optical_power"] = kwargs["optical_power"][0]
 
         self.component = Gaussian(**kwargs)
-        singleton.source_component = self.component
+        datashelf.source_component = self.component
 
 # -

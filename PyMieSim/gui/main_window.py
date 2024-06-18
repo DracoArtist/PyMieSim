@@ -8,7 +8,7 @@ from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
 from PyMieSim.gui.config import Config
-from PyMieSim.gui.singleton import singleton
+from PyMieSim.gui.singleton import datashelf
 
 
 class PyMieSimGUI:
@@ -118,16 +118,14 @@ class PyMieSimGUI:
         Starts off by calculating all the data needed to create the plot,
         then it generates the figure
         """
-        # Deleting any remaining data and figure from singleton, before calculating new ones
+        # Deleting any remaining data and figure from datashelf, before calculating new ones
         try:
-            del singleton.figure
-            del singleton.data
+            del datashelf.figure
+            del datashelf.data
         except AttributeError:
             pass
 
         self.config.calculate_plot()
-
-        print(singleton.x_axis_label_widget.get())
 
         try:
             self.config.generate_figure()
@@ -140,12 +138,12 @@ class PyMieSimGUI:
         Triggered by the "Save as CSV" button. Opens a file dialog to save the computed data as a CSV file.
         """
 
-        if hasattr(singleton, 'data'):
+        if hasattr(datashelf, 'data'):
             self.filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
             if self.filepath:
 
-                # Assuming singleton.data is a pandas DataFrame or can be converted to one
-                np.savetxt(self.filepath, singleton.data.y.values.squeeze(), delimiter=",")
+                # Assuming datashelf.data is a pandas DataFrame or can be converted to one
+                np.savetxt(self.filepath, datashelf.data.y.values.squeeze(), delimiter=",")
                 print(f"Data saved to {self.filepath}")
         else:
             print("No data to save. Please calculate first.")
@@ -156,7 +154,7 @@ class PyMieSimGUI:
         then saves the plot to the specified location.
         """
         # Ensure there's a plot to save
-        if hasattr(singleton, 'figure'):
+        if hasattr(datashelf, 'figure'):
             # Open file dialog to choose file name and type
             filetypes = [
                 ('PNG files', '*.png'),
@@ -175,7 +173,7 @@ class PyMieSimGUI:
             # If a file was selected (i.e., dialog not cancelled)
             if self.filepath:
                 # Save the figure using matplotlib's savefig
-                singleton.figure.savefig(self.filepath)
+                datashelf.figure.savefig(self.filepath)
                 messagebox.showinfo("Export Successful", f"Plot successfully saved to {self.filepath}")
         else:
             messagebox.showwarning("Export Failed", "No plot available to export.")
@@ -184,6 +182,6 @@ class PyMieSimGUI:
         """
         Allows the user to unselect the std-axis radiobuttons.
         """
-        singleton.STD_axis_label_widget.set(None)
+        datashelf.STD_axis_label_widget.set(None)
 
 # -
