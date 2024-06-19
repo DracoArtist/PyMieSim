@@ -70,4 +70,5 @@ class SourceTab(BaseTab):
 
         self.component = Gaussian(**kwargs)
 
+
 # -
