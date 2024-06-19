@@ -19,7 +19,6 @@ class AxisTab(BaseTab):
 
     Attributes:
         other_tabs (list[BaseTab]): The source, scatterer and detector tabs, in which the x and std axis are selected
-        measure_map: The list of the different measures (i.e. y axis) possible to choose from
 
     Inherited attributes:
         notebook (ttk.Notebook): The notebook widget this tab is part of.

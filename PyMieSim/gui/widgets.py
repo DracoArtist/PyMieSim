@@ -138,9 +138,6 @@ class InputWidget(BaseWidget):
     default_value: Union[float | str]
     multiplicative_factor: float | None = None
     can_be_axis: bool = True
-    # The variables for the radiobuttons used to select the X and STD axis
-    x_axis: tkinter.StringVar | None = None
-    STD_axis: tkinter.StringVar | None = None
 
     def __post_init__(self) -> NoReturn:
         """

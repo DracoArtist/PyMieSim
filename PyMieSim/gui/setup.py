@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from typing import Dict, NoReturn
 import matplotlib.pyplot as plt
 import tkinter as tk
@@ -9,9 +12,15 @@ from PyMieSim.experiment import Setup
 from PyMieSim.gui.singleton import datashelf
 
 
-class Config:
+class SetUp:
+    """
+    This class is doing the setup of the notebook and tabs of the gui.
 
-    def __init__(self, master):
+    Attributes:
+        master (tk.Tk): the root of the gui
+    """
+
+    def __init__(self, master: tk.Tk):
         self.master = master
         datashelf.x_axis_label_widget = tk.StringVar(value='phi_offset')
         datashelf.STD_axis_label_widget = tk.StringVar(value=None)
@@ -116,6 +125,12 @@ class Config:
         self.x_axis_component = self.axis_mapping[self.x_axis]
 
         self.STD_axis_component = None if self.std_axis == "None" else self.axis_mapping[self.std_axis]
+
+        try:
+            self.generate_figure()
+
+        except ValueError as e:
+            messagebox.showerror("Input Error", str(e))
 
     def generate_figure(self):
         """

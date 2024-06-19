@@ -8,7 +8,7 @@ from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyMieSim.gui.config import Config
+from PyMieSim.gui.setup import SetUp
 from PyMieSim.gui.singleton import datashelf
 
 
@@ -33,11 +33,11 @@ class PyMieSimGUI:
         self.master.title("PyMieSim Graphic Interface")
         self.link_radio_button = "link"
         self.customize_notebook_style()
-        self.setup_config()
+        self.tab_setup()
         self.setup_controls()
 
-    def setup_config(self):
-        self.config = Config(master=self.master)
+    def tab_setup(self):
+        self.tab_setup = SetUp(master=self.master)
 
     def on_close(self) -> NoReturn:
         """
@@ -85,7 +85,7 @@ class PyMieSimGUI:
             self.controls_frame,
             text="Calculate",
             style="Large.TButton",
-            command=self.update_plot
+            command=self.tab_setup.calculate_plot
         )
         self.calculate_button.grid(row=0, column=0, sticky="ew")
 
@@ -126,13 +126,7 @@ class PyMieSimGUI:
         except AttributeError:
             pass
 
-        self.config.calculate_plot()
-
-        try:
-            self.config.generate_figure()
-
-        except ValueError as e:
-            messagebox.showerror("Input Error", str(e))
+        self.tab_setup.calculate_plot()
 
     def save_data_as_csv(self) -> NoReturn:
         """

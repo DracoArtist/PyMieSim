@@ -3,10 +3,10 @@ from PyMieSim.experiment import scatterer
 
 class DataShelf:
     """
-    This is a singleton that stores variables latter accesed in another class
-    It is used to reduce coupling
+    This is a singleton that stores variables later accessed in another class.
+    It is used to reduce coupling.
 
-    Attributes it will hold during life_time:
+    Attributes it will hold during its lifetime:
     > x_axis_label_widget (tk.StringVar)
     > STD_axis_label_widget (tk.StringVar)
     > scatterer_tab_name (tk.StringVar)
@@ -15,10 +15,13 @@ class DataShelf:
     > data (DataVisual.multi_array.Array)
     > figure (matplotlib.figure.Figure)
     """
+
     def __init__(self) -> None:
-        self.measure_map = scatterer.Sphere.available_measure_list  # Default options for y_axis
+        # Default options for y_axis combobox
+        self.measure_map = scatterer.Sphere.available_measure_list
 
 
+# Instantiates the singleton. This instance is used throughout the rest of the code.
 datashelf = DataShelf()
 
 # -

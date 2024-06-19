@@ -28,18 +28,19 @@ def test_input_widgets_exist(**kwargs):
     This function checks if the number of widgets in each tab matches the expected number of widgets.
     """
     gui = kwargs['gui']
+    tab_setup = gui.tab_setup
 
-    assert len(gui.source_tab.widget_collection.widgets) == 4, 'Missing widgets in the source_tab'
+    assert len(tab_setup.source_tab.widget_collection.widgets) == 4, 'Missing widgets in the source_tab'
 
-    for tab, widget_count in zip(gui.scatterer_tab.type_widget['values'], [3, 3, 5]):
-        gui.scatterer_tab.type_widget.set(tab)
-        gui.scatterer_tab.on_type_change()
-        assert len(gui.scatterer_tab.widget_collection.widgets) == widget_count, f'Missing widget in the source/{tab} tab'
+    for tab, widget_count in zip(tab_setup.scatterer_tab.type_widget['values'], [3, 3, 5]):
+        tab_setup.scatterer_tab.type_widget.set(tab)
+        tab_setup.scatterer_tab.on_type_change()
+        assert len(tab_setup.scatterer_tab.widget_collection.widgets) == widget_count, f'Missing widget in the source/{tab} tab'
 
-    for tab, widget_count in zip(gui.detector_tab.type_widget['values'], [5, 8]):
-        gui.detector_tab.type_widget.set(tab)
-        gui.detector_tab.on_type_change()
-        assert len(gui.detector_tab.widget_collection.widgets) == widget_count, f'Missing widget in the detector/{tab} tab'
+    for tab, widget_count in zip(tab_setup.detector_tab.type_widget['values'], [5, 8]):
+        tab_setup.detector_tab.type_widget.set(tab)
+        tab_setup.detector_tab.on_type_change()
+        assert len(tab_setup.detector_tab.widget_collection.widgets) == widget_count, f'Missing widget in the detector/{tab} tab'
 
 
 @set_up_gui

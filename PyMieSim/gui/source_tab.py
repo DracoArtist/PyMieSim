@@ -24,9 +24,12 @@ class SourceTab(BaseTab):
 
     Attributes:
         variables (WidgetCollection): A collection of widgets for source configuration.
-        x_axis (tkinter.StringVar): empty.
-        STD_axis (tkinter.StringVar): empty.
 
+    Inherited attributes:
+        notebook (ttk.Notebook): The notebook widget this tab is part of.
+        label (str): The label for the tab.
+        frame (ttk.Frame): The frame serving as the container for the tab's contents.
+        main_window: Reference to the main window of the application, if applicable.
     """
 
     def __post_init__(self):
