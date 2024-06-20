@@ -8,7 +8,7 @@ from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyMieSim.gui.setup import SetUp
+from PyMieSim.gui.setup_tabs import SetUp
 from PyMieSim.gui.singleton import datashelf
 
 

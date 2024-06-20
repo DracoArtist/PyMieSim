@@ -71,6 +71,11 @@ def test_in_all_combination_of_widgets(y_axis_index):
     y_axis_widget = tab_setup.axis_tab.widget_collection.widgets[0]
     y_axis_widget.tk_widget.current(y_axis_index)
 
+    measure_input = gui.tab_setup.axis_tab.get_inputs()[0]
+    if measure_input not in ['Qsca', 'Csca', 'Qext', 'Cext', 'Qabs', 'Cabs', 'coupling']:
+        root.destroy()
+        return
+
     # The following nested for loops will create all possible widget combinations
 
     source_widgets = tab_setup.source_tab.widget_collection.widgets
