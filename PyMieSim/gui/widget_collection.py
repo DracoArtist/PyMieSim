@@ -29,13 +29,7 @@ class WidgetCollection:
         self.frame = frame
         self.row_start = 0
 
-    def add_widgets(self, *widgets) -> NoReturn:
-        for widget in widgets:
-            widget.frame = self.frame
-
-        self.widgets = widgets
-
-    def new_add_widgets(self, tab: str, component: str):
+    def add_widgets(self, tab: str, component: str):
         widgets = widget_dock[tab][component]
 
         for widget in widgets:

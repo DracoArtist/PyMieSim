@@ -90,7 +90,7 @@ class DetectorTab(BaseTab):
         """
         self.widget_collection = WidgetCollection(frame=self.frame)
 
-        self.widget_collection.new_add_widgets(tab='detector', component='photodiode')
+        self.widget_collection.add_widgets(tab='detector_tab', component='Photodiode')
 
         self.widget_collection.setup_widgets(row_start=1)
         self.setup_photodiode_component()
@@ -101,7 +101,7 @@ class DetectorTab(BaseTab):
         """
         self.widget_collection = WidgetCollection(frame=self.frame)
 
-        self.widget_collection.new_add_widgets(tab='detector', component='coherentmode')
+        self.widget_collection.add_widgets(tab='detector_tab', component='Coherentmode')
 
         self.widget_collection.setup_widgets(row_start=1)
         self.setup_coherentmode_component()

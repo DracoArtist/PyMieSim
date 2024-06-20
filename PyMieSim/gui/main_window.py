@@ -113,21 +113,6 @@ class PyMieSimGUI:
         )
         self.reset_std_button.grid(row=0, column=3, sticky="ew")
 
-    def update_plot(self) -> NoReturn:
-        """
-        Will generate and update the plots made by PyMieSima.
-        Starts off by calculating all the data needed to create the plot,
-        then it generates the figure
-        """
-        # Deleting any remaining data and figure from datashelf, before calculating new ones
-        try:
-            del datashelf.figure
-            del datashelf.data
-        except AttributeError:
-            pass
-
-        self.tab_setup.calculate_plot()
-
     def save_data_as_csv(self) -> NoReturn:
         """
         Triggered by the "Save as CSV" button. Opens a file dialog to save the computed data as a CSV file.

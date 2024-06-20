@@ -94,4 +94,7 @@ def test_in_all_combination_of_widgets(y_axis_str):
 
     root.destroy()
 
+
+test_in_all_combination_of_widgets(1)
+
 # -

@@ -4,9 +4,7 @@
 from typing import NoReturn
 
 from PyMieSim.gui.base_tab import BaseTab
-from PyMieSim.gui.widgets import ComBoxWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
-from PyMieSim.gui.singleton import datashelf
 
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
@@ -40,13 +38,9 @@ class AxisTab(BaseTab):
         variables for the x-axis, y-axis, and an optional standard deviation (STD) axis.
         """
 
-        self.y_axis_options = list(datashelf.measure_map.keys())
-
         self.widget_collection = WidgetCollection(frame=self.frame)
 
-        self.widget_collection.add_widgets(
-            ComBoxWidget(label='y-axis', component_label='y_axis', options=self.y_axis_options, default_options=len(self.y_axis_options) - 1),
-        )
+        self.widget_collection.add_widgets(tab='axis_tab', component='y_axis')
 
         self.widget_collection.setup_widgets(title_bar=False)
 

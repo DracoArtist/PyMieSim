@@ -48,6 +48,12 @@ class ComBoxWidget(BaseWidget):
     options: List[str]
     value = None
 
+    def initialize(self):
+        """
+        Empty function to allow uniform widget_collection.add_widgets accross all widgets
+        """
+        pass
+
     def setup(self, row: int = 0):
         self.tk_label = tkinter.Label(self.frame, text=self.label)
         self.tk_widget = tkinter.ttk.Combobox(self.frame, values=self.options)
