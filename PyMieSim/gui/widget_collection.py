@@ -5,6 +5,7 @@ from typing import NoReturn, Dict
 import tkinter
 
 from PyMieSim.gui.widgets import BaseWidget
+from PyMieSim.gui.widget_dictonary import widget_dock
 
 
 class WidgetCollection:
@@ -31,6 +32,15 @@ class WidgetCollection:
     def add_widgets(self, *widgets) -> NoReturn:
         for widget in widgets:
             widget.frame = self.frame
+
+        self.widgets = widgets
+
+    def new_add_widgets(self, tab: str, component: str):
+        widgets = widget_dock[tab][component]
+
+        for widget in widgets:
+            widget.frame = self.frame
+            widget.initialize()
 
         self.widgets = widgets
 

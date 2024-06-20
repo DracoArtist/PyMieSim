@@ -84,7 +84,7 @@ class RadioButtonWidget(BaseWidget):
     options_values: list
     can_be_axis: bool = False
 
-    def __post_init__(self):
+    def initialize(self):
         self.tk_variable = tkinter.IntVar()
 
     def update(self):
@@ -139,7 +139,7 @@ class InputWidget(BaseWidget):
     multiplicative_factor: float | None = None
     can_be_axis: bool = True
 
-    def __post_init__(self) -> NoReturn:
+    def initialize(self) -> NoReturn:
         """
         Initializes a new instance of the Widget class.
         """
