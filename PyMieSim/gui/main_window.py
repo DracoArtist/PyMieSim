@@ -3,15 +3,13 @@
 
 
 from typing import NoReturn
-import tkinter as tk
+import tkinter
 from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
-from PyMieSim.experiment import Setup
-
-from PyMieSim.gui import SourceTab, ScattererTab, DetectorTab, AxisTab
+from PyMieSim.gui.setup_tab import SetUp
+from PyMieSim.gui.singleton import datashelf
 
 
 class PyMieSimGUI:
@@ -20,10 +18,10 @@ class PyMieSimGUI:
     for cylindrical scatterers using PyMieSim.
 
     Attributes:
-        master (tk.Tk): The main tkinter window.
+        master (tkinter.Tk): The main tkinter window.
     """
 
-    def __init__(self, master: tk.Tk):
+    def __init__(self, master: tkinter.Tk):
         """
         Initializes the GUI, setting up variables, plot frame, notebook, and controls.
 
@@ -34,12 +32,12 @@ class PyMieSimGUI:
         self.master.protocol("WM_DELETE_WINDOW", self.on_close)
         self.master.title("PyMieSim Graphic Interface")
         self.link_radio_button = "link"
-        self.x_axis_label_widget = tk.StringVar(value='phi_offset')
-        self.STD_axis_label_widget = tk.StringVar(value=None)
-        self.STD_axis_label_widget.set(None)
         self.customize_notebook_style()
-        self.setup_notebook()
+        self.setup_tab = SetUp(master=self.master)
         self.setup_controls()
+
+    def setup_tab(self):
+        self.setup_tab = SetUp(master=self.master)
 
     def on_close(self) -> NoReturn:
         """
@@ -48,6 +46,7 @@ class PyMieSimGUI:
         plt.close('all')  # Close all matplotlib figures
         self.master.destroy()  # Close the Tkinter window
 
+    # The following section of the class will setup the notebooks and their content
     def customize_notebook_style(self) -> NoReturn:
         """
         Customizes the ttk Notebook style for a unique appearance of tabs, making them larger.
@@ -74,75 +73,7 @@ class PyMieSimGUI:
             padding=[20, 20]
         )
 
-    def setup_notebook(self) -> NoReturn:
-        """
-        Sets up the notebook widget with tabs for Source, Scatterer, and Detector configurations.
-        """
-        self.notebook = ttk.Notebook(self.master)
-        self.notebook.grid(row=0, column=0, sticky="ewns")
-
-        self.notebook_2 = ttk.Notebook(self.master)
-        self.notebook_2.grid(row=2, column=0, sticky="ewns")
-
-        # Create tab instances
-        self.source_tab = SourceTab(
-            x_axis=self.x_axis_label_widget,
-            STD_axis=self.STD_axis_label_widget,
-            notebook=self.notebook,
-            label='Source'
-        )
-
-        self.scatterer_tab = ScattererTab(
-            x_axis=self.x_axis_label_widget,
-            STD_axis=self.STD_axis_label_widget,
-            notebook=self.notebook,
-            label='Scatterer',
-            source_tab=self.source_tab
-        )
-
-        self.detector_tab = DetectorTab(
-            x_axis=self.x_axis_label_widget,
-            STD_axis=self.STD_axis_label_widget,
-            notebook=self.notebook,
-            label='Detector'
-        )
-
-        self.axis_tab = AxisTab(
-            notebook=self.notebook_2,
-            label='Axis Configuration',
-            other_tabs=[self.source_tab, self.scatterer_tab, self.detector_tab]
-        )
-
-    def export_plot(self) -> NoReturn:
-        """
-        Opens a file dialog for the user to choose where to save the current plot,
-        then saves the plot to the specified location.
-        """
-        # Ensure there's a plot to save
-        if hasattr(self, 'figure'):
-            # Open file dialog to choose file name and type
-            filetypes = [
-                ('PNG files', '*.png'),
-                ('JPEG files', '*.jpg;*.jpeg'),
-                ('PDF files', '*.pdf'),
-                ('SVG files', '*.svg'),
-                ('All files', '*.*')
-            ]
-
-            self.filepath = filedialog.asksaveasfilename(
-                defaultextension=".png",
-                filetypes=filetypes,
-                title="Save plot as..."
-            )
-
-            # If a file was selected (i.e., dialog not cancelled)
-            if self.filepath:
-                # Save the figure using matplotlib's savefig
-                self.figure.savefig(self.filepath)
-                messagebox.showinfo("Export Successful", f"Plot successfully saved to {self.filepath}")
-        else:
-            messagebox.showwarning("Export Failed", "No plot available to export.")
-
+    # The following section of the class defines the control buttons and their respective commands
     def setup_controls(self) -> NoReturn:
         """
         Sets up control buttons for calculating results and saving data.
@@ -154,7 +85,7 @@ class PyMieSimGUI:
             self.controls_frame,
             text="Calculate",
             style="Large.TButton",
-            command=self.update_plot
+            command=self.setup_tab.calculate_plot
         )
         self.calculate_button.grid(row=0, column=0, sticky="ew")
 
@@ -182,95 +113,55 @@ class PyMieSimGUI:
         )
         self.reset_std_button.grid(row=0, column=3, sticky="ew")
 
-    def reset_STDaxis_selection(self):
-        """
-        Allows the user to unselect the std-axis radiobuttons.
-        """
-        self.STD_axis_label_widget.set(None)
-
-    def setup_PyMieSim(self) -> NoReturn:
-        """
-        Compute the B1 scattering data using either a single diameter or a range of diameters.
-        """
-        self.scatterer_tab.setup_component()
-        self.source_tab.setup_component()
-        self.detector_tab.setup_component()
-
-        self.experiment = Setup(
-            scatterer=self.scatterer_tab.component,
-            source=self.source_tab.component,
-            detector=self.detector_tab.component
-        )
-
     def save_data_as_csv(self) -> NoReturn:
         """
         Triggered by the "Save as CSV" button. Opens a file dialog to save the computed data as a CSV file.
         """
 
-        if hasattr(self, 'data'):
+        if hasattr(datashelf, 'data'):
             self.filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
             if self.filepath:
-                # Assuming self.data is a pandas DataFrame or can be converted to one
-                np.savetxt(self.filepath, self.data.y.values.squeeze(), delimiter=",")
+
+                # Assuming datashelf.data is a pandas DataFrame or can be converted to one
+                np.savetxt(self.filepath, datashelf.data.y.values.squeeze(), delimiter=",")
                 print(f"Data saved to {self.filepath}")
         else:
             print("No data to save. Please calculate first.")
 
-    def generate_figure(self):
+    def export_plot(self) -> NoReturn:
         """
-        Generates and displays the simulation results as a plot in a new window.
+        Opens a file dialog for the user to choose where to save the current plot,
+        then saves the plot to the specified location.
         """
-        if hasattr(self, 'new_window'):
-            self.new_window.destroy()
+        # Ensure there's a plot to save
+        if hasattr(datashelf, 'figure'):
+            # Open file dialog to choose file name and type
+            filetypes = [
+                ('PNG files', '*.png'),
+                ('JPEG files', '*.jpg;*.jpeg'),
+                ('PDF files', '*.pdf'),
+                ('SVG files', '*.svg'),
+                ('All files', '*.*')
+            ]
 
-        self.new_window = tk.Toplevel(self.master)
-        self.new_window.title("Plot Window")
+            self.filepath = filedialog.asksaveasfilename(
+                defaultextension=".png",
+                filetypes=filetypes,
+                title="Save plot as..."
+            )
 
-        figure = self.data.plot(x=self.x_axis_component, std=self.STD_axis_component)
-        figure.unit_size = (9, 4)
-        figure._render_()
-        self.figure = figure._mpl_figure
+            # If a file was selected (i.e., dialog not cancelled)
+            if self.filepath:
+                # Save the figure using matplotlib's savefig
+                datashelf.figure.savefig(self.filepath)
+                messagebox.showinfo("Export Successful", f"Plot successfully saved to {self.filepath}")
+        else:
+            messagebox.showwarning("Export Failed", "No plot available to export.")
 
-        canvas = FigureCanvasTkAgg(self.figure, master=self.new_window)
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-        self.toolbar = NavigationToolbar2Tk(canvas, self.new_window)
-        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-        canvas.draw()
-        self.toolbar.update()
-
-    def update_plot(self) -> NoReturn:
-        plt.close('all')
-
-        x_axis, y_axis, std_axis = self.x_axis_label_widget.get(), self.axis_tab.get_inputs()[0], self.STD_axis_label_widget.get()
-
-        if x_axis == std_axis:
-            self.messagebox1 = tk.messagebox.showerror(title="error", message="X-axis cannot be equal to STD-axis.", parent=self.master)
-            raise ValueError("Warning: x-axis cannot be equal to STD-axis.")
-
-        if y_axis != "coupling" and std_axis in self.detector_tab.component_dict.keys():
-            self.messagebox2 = tk.messagebox.showerror(title="error", message="STD-axis cannot be associated to detector if y-axis is not coupling.", parent=self.master)
-            raise ValueError("Warning: STD-axis cannot be associated to detector if y-axis is not coupling.")
-
-        if y_axis != "coupling" and x_axis in self.detector_tab.component_dict.keys():
-            self.messagebox3 = tk.messagebox.showerror(title="error", message="x-axis cannot be associated to detector if y-axis is not coupling.", parent=self.master)
-            raise ValueError("Warning: x-axis cannot be associated to detector if y-axis is not coupling.")
-
-        self.y_axis = self.axis_tab.measure_map[y_axis]
-
-        self.setup_PyMieSim()
-
-        self.data = self.experiment.get(self.y_axis)
-
-        self.x_axis_component = self.axis_tab.axis_mapping[x_axis]
-
-        self.STD_axis_component = None if std_axis == "None" else self.axis_tab.axis_mapping[std_axis]
-
-        try:
-            self.generate_figure()
-
-        except ValueError as e:
-            messagebox.showerror("Input Error", str(e))
+    def reset_STDaxis_selection(self):
+        """
+        Allows the user to unselect the std-axis radiobuttons.
+        """
+        datashelf.STD_axis_label_widget.set(None)
 
 # -

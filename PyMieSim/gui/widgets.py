@@ -4,6 +4,9 @@
 from typing import Union, NoReturn, List
 import numpy
 import tkinter
+
+from PyMieSim.gui.singleton import datashelf
+
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
 
@@ -45,6 +48,12 @@ class ComBoxWidget(BaseWidget):
     options: List[str]
     value = None
 
+    def initialize(self):
+        """
+        Empty function to allow uniform widget_collection.add_widgets accross all widgets
+        """
+        pass
+
     def setup(self, row: int = 0):
         self.tk_label = tkinter.Label(self.frame, text=self.label)
         self.tk_widget = tkinter.ttk.Combobox(self.frame, values=self.options)
@@ -81,7 +90,7 @@ class RadioButtonWidget(BaseWidget):
     options_values: list
     can_be_axis: bool = False
 
-    def __post_init__(self):
+    def initialize(self):
         self.tk_variable = tkinter.IntVar()
 
     def update(self):
@@ -135,11 +144,8 @@ class InputWidget(BaseWidget):
     default_value: Union[float | str]
     multiplicative_factor: float | None = None
     can_be_axis: bool = True
-    # The variables for the radiobuttons used to select the X and STD axis
-    x_axis: tkinter.StringVar
-    STD_axis: tkinter.StringVar
 
-    def __post_init__(self) -> NoReturn:
+    def initialize(self) -> NoReturn:
         """
         Initializes a new instance of the Widget class.
         """
@@ -155,9 +161,9 @@ class InputWidget(BaseWidget):
 
         # Adds the radiobuttons used to select wether this variable is used as an axis
         if self.can_be_axis:
-            self.tk_radio_button_1 = tkinter.Radiobutton(self.frame, variable=self.x_axis, value=self.component_label)
+            self.tk_radio_button_1 = tkinter.Radiobutton(self.frame, variable=datashelf.x_axis_label_widget, value=self.component_label)
             self.tk_radio_button_1.grid(row=row + 1, column=2, sticky="W", pady=2)
-            self.tk_radio_button_2 = tkinter.Radiobutton(self.frame, variable=self.STD_axis, value=self.component_label)
+            self.tk_radio_button_2 = tkinter.Radiobutton(self.frame, variable=datashelf.STD_axis_label_widget, value=self.component_label)
             self.tk_radio_button_2.grid(row=row + 1, column=3, sticky="W", pady=2)
 
     def get_value(self):

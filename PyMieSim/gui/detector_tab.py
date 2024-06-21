@@ -3,11 +3,11 @@
 
 from typing import NoReturn
 from tkinter import ttk, StringVar
-import tkinter
+
 from PyMieSim.experiment.detector import Photodiode, CoherentMode
 from PyMieSim.gui.base_tab import BaseTab
-from PyMieSim.gui.widgets import InputWidget, RadioButtonWidget
 from PyMieSim.gui.widget_collection import WidgetCollection
+
 from pydantic.dataclasses import dataclass
 from pydantic import ConfigDict
 
@@ -23,8 +23,6 @@ class DetectorTab(BaseTab):
 
     Attributes:
         variables (WidgetCollection): A collection of widgets for detector configuration.
-        x_axis (tkinter.StringVar): empty.
-        STD_axis (tkinter.StringVar): empty.
 
     Inherited attributes:
         notebook (ttk.Notebook): The notebook widget this tab is part of.
@@ -32,8 +30,6 @@ class DetectorTab(BaseTab):
         frame (ttk.Frame): The frame serving as the container for the tab's contents.
         main_window: Reference to the main window of the application, if applicable.
     """
-    x_axis: tkinter.StringVar
-    STD_axis: tkinter.StringVar
 
     def __post_init__(self) -> None:
         """
@@ -54,6 +50,7 @@ class DetectorTab(BaseTab):
             values=['Photodiode', 'CoherentMode'],
             state="readonly"
         )
+
         self.type_widget.grid(row=0, column=0)
         self.type_widget.bind("<<ComboboxSelected>>", self.on_type_change)
 
@@ -93,13 +90,7 @@ class DetectorTab(BaseTab):
         """
         self.widget_collection = WidgetCollection(frame=self.frame)
 
-        self.widget_collection.add_widgets(
-            InputWidget(default_value='0.2, 0.3, 0.4', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Numerical aperture (NA)', component_label='NA', dtype=float),
-            InputWidget(default_value='0', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Gamma [degree]', component_label='gamma_offset', dtype=float),
-            InputWidget(default_value='0:360:200', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Phi [degree]', component_label='phi_offset', dtype=float),
-            InputWidget(default_value='None', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Polarization filter [degree]', component_label='polarization_filter', dtype=float),
-            InputWidget(default_value='500', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Sampling', component_label='sampling', dtype=int)
-        )
+        self.widget_collection.add_widgets(tab='detector_tab', component='Photodiode')
 
         self.widget_collection.setup_widgets(row_start=1)
         self.setup_photodiode_component()
@@ -110,16 +101,7 @@ class DetectorTab(BaseTab):
         """
         self.widget_collection = WidgetCollection(frame=self.frame)
 
-        self.widget_collection.add_widgets(
-            RadioButtonWidget(option_text=['Point', 'Mean'], options_values=[False, True], component_label='mean_coupling', label='Mean coupling'),
-            InputWidget(default_value='0', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Polarization filter [degree]', component_label='polarization_filter', dtype=float),
-            InputWidget(default_value='0', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Gamma [degree]', component_label='gamma_offset', dtype=float),
-            InputWidget(default_value='180:-180:200', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Phi [degree]', component_label='phi_offset', dtype=float),
-            InputWidget(default_value='0.2, 0.3, 0.4', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Numerical aperture (NA)', component_label='NA', dtype=float),
-            InputWidget(default_value='LP01', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Mode field', component_label='mode_number', dtype=str),
-            InputWidget(default_value='0', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Field rotation [degree]', component_label='rotation', dtype=float),
-            InputWidget(default_value='500', x_axis=self.x_axis, STD_axis=self.STD_axis, label='Sampling', component_label='sampling', dtype=int)
-        )
+        self.widget_collection.add_widgets(tab='detector_tab', component='Coherentmode')
 
         self.widget_collection.setup_widgets(row_start=1)
         self.setup_coherentmode_component()

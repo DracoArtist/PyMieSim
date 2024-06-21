@@ -2,15 +2,17 @@
 # -*- coding: utf-8 -*-
 
 
-from typing import Iterable, List, Union, NoReturn
+from typing import List, Union, NoReturn, Tuple, Any
 import numpy
 from pydantic.dataclasses import dataclass
+from dataclasses import field
 
 
 config_dict = dict(
-    kw_only=True,
+    kw_only=False,
     slots=True,
-    extra='forbid'
+    extra='forbid',
+    arbitrary_types_allowed=True
 )
 
 
@@ -23,63 +25,69 @@ class UnitPolarizationAngle:
         self.jones_vector = numpy.asarray(self.jones_vector)
 
     def __repr__(self) -> str:
-        return self.angle.__repr__()
+        return f"{self.angle}"
 
 
-class JonesVector:
-    """
-    Represents a Jones vector for describing the polarization state of light.
-    """
+@dataclass(config=config_dict)
+class UnitJonesVector:
+    jones_vector: Tuple[Any, Any]
 
-    def __init__(self, values: Iterable) -> NoReturn:
-        """
-        Initialize the Jones vector.
-
-        Parameters:
-            - jones_vector: Iterable, a collection that represents the Jones vector components.
-        """
-        self.values = numpy.atleast_2d(values).astype(complex)
+    def __post_init__(self) -> NoReturn:
+        self.jones_vector = numpy.asarray(self.jones_vector)
 
     def __repr__(self) -> str:
-        return f"JonesVector({self.values})"
+        return f"[{self.jones_vector[0]}, {self.jones_vector[1]}]"
 
-    def __add__(self, other) -> 'JonesVector':
+
+@dataclass(config=config_dict)
+class BasePolarization:
+    elements: List[Union[UnitPolarizationAngle, UnitJonesVector]] = field(init=False)
+
+    @property
+    def jones_vector(self) -> numpy.ndarray:
+        return numpy.asarray([
+            unit.jones_vector for unit in self.elements
+        ]).astype(complex)
+
+    def __add__(self, other: object) -> 'BasePolarization':
         """
         Add another Jones vector to this Jones vector, combining their polarization states.
 
         Parameters:
-            - other: JonesVector, another Jones vector to add.
+            - other: BasePolarization, another Jones vector to add.
 
         Returns:
-            - JonesVector, the combined Jones vector.
+            - BasePolarization, the combined Jones vector.
         """
-        return JonesVector(numpy.vstack((self.values, other.values)))
+        self.elements.extend(other.elements)
+        self.__class__ = BasePolarization
+        return self
 
-
-class RightCircular(JonesVector):
-    """
-    Represents right circular polarization.
-    """
-
-    def __init__(self) -> NoReturn:
-        super().__init__([1, 1j])
-
-
-class LeftCircular(JonesVector):
-    """
-    Represents left circular polarization.
-    """
-
-    def __init__(self) -> NoReturn:
-        super().__init__([1, -1j])
+    def __getitem__(self, idx: int) -> Union[UnitPolarizationAngle, UnitJonesVector]:
+        return self.elements[idx]
 
 
 @dataclass(config=config_dict)
-class Linear(JonesVector):
+class JonesVector(BasePolarization):
     """
     Represents linear polarization for a given angle or angles.
     """
-    angles: Union[List[float], float]
+    elements: Union[numpy.ndarray, List[Tuple[Any, Any]], Tuple[Any, Any]]
+
+    def __post_init__(self):
+        self.elements = numpy.atleast_2d(self.elements).astype(complex)
+
+        self.elements = [
+            UnitJonesVector(element) for element in self.elements
+        ]
+
+
+@dataclass(config=config_dict)
+class Linear(BasePolarization):
+    """
+    Represents linear polarization for a given angle or angles.
+    """
+    angles: Union[numpy.ndarray, List[float], float]
 
     def __post_init__(self) -> NoReturn:
         """
@@ -94,14 +102,22 @@ class Linear(JonesVector):
             UnitPolarizationAngle(angle=angle) for angle in self.angles
         ]
 
-        self.jones_vector = numpy.asarray([
-            unit.jones_vector for unit in self.elements
-        ]).astype(complex)
 
-    def __getitem__(self, idx: int) -> UnitPolarizationAngle:
-        return self.elements[idx]
+class RightCircular(JonesVector):
+    """
+    Represents right circular polarization.
+    """
 
-    def __repr__(self):
-        return self.elements.__repr__()
+    def __init__(self) -> NoReturn:
+        super().__init__(elements=[[1, 1j]])
+
+
+class LeftCircular(JonesVector):
+    """
+    Represents left circular polarization.
+    """
+
+    def __init__(self) -> NoReturn:
+        super().__init__(elements=[[1, -1j]])
 
 # -
