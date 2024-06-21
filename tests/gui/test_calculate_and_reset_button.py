@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 measures = ['Qsca', 'Csca', 'Qabs', 'coupling']  # A selection of measures to test
 
+
 @patch('tkinter.messagebox.showerror')
 @patch('PyMieSim.gui.setup_tab.SetUp.generate_figure')
 def calculate_and_reset_button(mock_plot, mock_message_box, gui, possible_widgets):
