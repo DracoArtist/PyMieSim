@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from pytest import raises
-import tkinter as tk
+import tkinter
 from PyMieSim.gui.main_window import PyMieSimGUI
 from PyMieSim.gui.singleton import datashelf
 from unittest.mock import patch
@@ -13,11 +13,11 @@ def set_up_gui(foo):
     This is a decorator that will set up the gui, run the function and destroy the gui
     """
     def set_up():
-        root = tk.Tk()
+        root = tkinter.Tk()
         root.geometry("750x600")
         gui = PyMieSimGUI(root)
 
-        foo(tab_setup=gui.tab_setup, gui=gui)
+        foo(setup_tab=gui.setup_tab, gui=gui)
 
         root.destroy()
 
@@ -47,7 +47,7 @@ def radio_button_invoke(mock, widgets: list, gui) -> None:
             radio_button_x_axis.invoke()
             radio_button_STD_axis.invoke()
             with raises(ValueError):
-                gui.update_plot()
+                gui.setup_tab.calculate_plot()
 
 
 """
@@ -57,24 +57,24 @@ radio buttons of the GUI is possible and if the variables self.STD_axis_label_wi
 
 
 @set_up_gui
-def test_source_widgets(tab_setup, gui) -> None:
-    widgets = tab_setup.source_tab.widget_collection.widgets
+def test_source_widgets(setup_tab, gui) -> None:
+    widgets = setup_tab.source_tab.widget_collection.widgets
     radio_button_invoke(widgets=widgets, gui=gui)
 
 
 @set_up_gui
-def test_scatterer_widgets(tab_setup, gui) -> None:
-    for tab in tab_setup.scatterer_tab.type_widget['values']:
-        tab_setup.scatterer_tab.type_widget.set(tab)
-        tab_setup.scatterer_tab.on_type_change()
-        widgets = tab_setup.scatterer_tab.widget_collection.widgets
+def test_scatterer_widgets(setup_tab, gui) -> None:
+    for tab in setup_tab.scatterer_tab.type_widget['values']:
+        setup_tab.scatterer_tab.type_widget.set(tab)
+        setup_tab.scatterer_tab.on_type_change()
+        widgets = setup_tab.scatterer_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets, gui=gui)
 
 
 @set_up_gui
-def test_detector_widgets(tab_setup, gui) -> None:
-    for tab in tab_setup.detector_tab.type_widget['values']:
-        tab_setup.detector_tab.type_widget.set(tab)
-        tab_setup.detector_tab.on_type_change()
-        widgets = tab_setup.detector_tab.widget_collection.widgets
+def test_detector_widgets(setup_tab, gui) -> None:
+    for tab in setup_tab.detector_tab.type_widget['values']:
+        setup_tab.detector_tab.type_widget.set(tab)
+        setup_tab.detector_tab.on_type_change()
+        widgets = setup_tab.detector_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets, gui=gui)

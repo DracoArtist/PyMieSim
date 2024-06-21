@@ -3,7 +3,7 @@
 
 from typing import Dict, NoReturn
 import matplotlib.pyplot as plt
-import tkinter as tk
+import tkinter
 from tkinter import ttk, messagebox
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
@@ -20,12 +20,12 @@ class SetUp:
         master (tk.Tk): the root of the gui
     """
 
-    def __init__(self, master: tk.Tk):
+    def __init__(self, master: tkinter.Tk):
         self.master = master
-        datashelf.x_axis_label_widget = tk.StringVar(value='phi_offset')
-        datashelf.STD_axis_label_widget = tk.StringVar(value=None)
+        datashelf.x_axis_label_widget = tkinter.StringVar(value='phi_offset')
+        datashelf.STD_axis_label_widget = tkinter.StringVar(value=None)
         datashelf.STD_axis_label_widget.set(None)
-        datashelf.scatterer_tab_name = tk.StringVar(value='Sphere')
+        datashelf.scatterer_tab_name = tkinter.StringVar(value='Sphere')
         self.setup_notebook()
 
     def setup_notebook(self) -> NoReturn:
@@ -140,7 +140,7 @@ class SetUp:
             self.new_window.destroy()
 
         # Creates a tk window for the plot
-        self.new_window = tk.Toplevel(self.master)
+        self.new_window = tkinter.Toplevel(self.master)
         self.new_window.title("Plot Window")
 
         # Renders the figure
@@ -151,10 +151,10 @@ class SetUp:
 
         # Creates the canvas
         canvas = FigureCanvasTkAgg(datashelf.figure, master=self.new_window)
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
 
         self.toolbar = NavigationToolbar2Tk(canvas, self.new_window)
-        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        canvas._tkcanvas.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
 
         # Draws the figure
         canvas.draw()

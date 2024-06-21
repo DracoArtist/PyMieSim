@@ -3,12 +3,12 @@
 
 
 from typing import NoReturn
-import tkinter as tk
+import tkinter
 from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PyMieSim.gui.setup_tabs import SetUp
+from PyMieSim.gui.setup_tab import SetUp
 from PyMieSim.gui.singleton import datashelf
 
 
@@ -18,10 +18,10 @@ class PyMieSimGUI:
     for cylindrical scatterers using PyMieSim.
 
     Attributes:
-        master (tk.Tk): The main tkinter window.
+        master (tkinter.Tk): The main tkinter window.
     """
 
-    def __init__(self, master: tk.Tk):
+    def __init__(self, master: tkinter.Tk):
         """
         Initializes the GUI, setting up variables, plot frame, notebook, and controls.
 
@@ -33,11 +33,11 @@ class PyMieSimGUI:
         self.master.title("PyMieSim Graphic Interface")
         self.link_radio_button = "link"
         self.customize_notebook_style()
-        self.tab_setup()
+        self.setup_tab = SetUp(master=self.master)
         self.setup_controls()
 
-    def tab_setup(self):
-        self.tab_setup = SetUp(master=self.master)
+    def setup_tab(self):
+        self.setup_tab = SetUp(master=self.master)
 
     def on_close(self) -> NoReturn:
         """
@@ -85,7 +85,7 @@ class PyMieSimGUI:
             self.controls_frame,
             text="Calculate",
             style="Large.TButton",
-            command=self.tab_setup.calculate_plot
+            command=self.setup_tab.calculate_plot
         )
         self.calculate_button.grid(row=0, column=0, sticky="ew")
 

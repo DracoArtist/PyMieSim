@@ -3,39 +3,24 @@
 
 import pytest
 import tkinter
-import itertools as it
+import itertools
 
 from PyMieSim.gui.main_window import PyMieSimGUI
 from PyMieSim.gui.singleton import datashelf
-from PyMieSim.experiment.measure import __sphere__
-from PyMieSim.gui.widget_dictonary import widget_dock
-from PyMieSim.experiment.measure import __sphere__
-from PyMieSim.gui.widget_dictonary import widget_dock
-from unittest.mock import patch
-
 from unittest.mock import patch
 
 
-def reset_std_button(widget, gui):
-    '''
-    This is the function that will assert whether the reset_std_button works properly
-    '''
-    gui.reset_std_button.invoke()
-    assert datashelf.STD_axis_label_widget.get() == 'None', f"reset button did not worlkfor {widget.tk_radio_button_2['value']} widget"
-
-
-
-measures = ['Qsca', 'coupling']
+measures = ['Qsca', 'Csca', 'Qabs', 'coupling']  # A selection of measures to test
 
 @patch('tkinter.messagebox.showerror')
-@patch('PyMieSim.gui.setup_tabs.SetUp.generate_figure')
+@patch('PyMieSim.gui.setup_tab.SetUp.generate_figure')
 def calculate_and_reset_button(mock_plot, mock_message_box, gui, possible_widgets):
     """
     This function ensures that the calculate button generates a graph for
     all possible x-axis values, along with some combination of random std-axis values.
     It does not test for all possible combinations of x and std axis due to computational time constraints.
     """
-    for (x_widget, std_widget) in it.combinations(possible_widgets, 2):
+    for (x_widget, std_widget) in itertools.combinations(possible_widgets, 2):
         mock_plot.reset_mock()
 
         if x_widget.tk_radio_button_1['value'] == 'mode_number':
@@ -49,48 +34,49 @@ def calculate_and_reset_button(mock_plot, mock_message_box, gui, possible_widget
         std_widget.tk_radio_button_2.invoke()
         gui.calculate_button.invoke()
 
-        reset_std_button(widget=std_widget, gui=gui)
+        gui.reset_std_button.invoke()
+        assert datashelf.STD_axis_label_widget.get() == 'None', f"reset button did not worlkfor {widget.tk_radio_button_2['value']} widget"
 
 
-
-
-@pytest.mark.parametrize('y_axis_str', measures, ids=measures)
-def test_in_all_combination_of_widgets(y_axis_str):
+@pytest.mark.parametrize('measure', measures)
+@pytest.mark.parametrize('detector_tab', ['Photodiode', 'CoherentMode'])
+@pytest.mark.parametrize('scatterer_tab', ['Sphere', 'Cylinder', 'CoreShell'])
+def test_in_all_combination_of_widgets(scatterer_tab, detector_tab, measure):
     """
     This function is meant to cycle through all combinations of tabs and generate the corresponding battery of
     widgets with which the tests should be run. It will then execute the tests for all tab combinations.
     """
+
+    # Setting up the GUI
     root = tkinter.Tk()
     root.geometry("750x600")
     gui = PyMieSimGUI(root)
 
-    gui.tab_setup.axis_tab.widget_collection.widgets[0].tk_widget.set(y_axis_str)
+    # Choose the correct measure (i.e. y-axis)
+    gui.setup_tab.axis_tab.widget_collection.widgets[0].tk_widget.set(measure)
 
-    # The following nested for loops will create all possible widget combinations
-    source_widgets = gui.tab_setup.source_tab.widget_collection
+    # Set up the tabs
+    gui.setup_tab.scatterer_tab.type_widget.set(scatterer_tab)
+    gui.setup_tab.scatterer_tab.on_type_change()
 
-    scatt_det_combinations = it.product(widget_dock['scatterer_tab'].keys(), widget_dock['detector_tab'].keys())
+    gui.setup_tab.detector_tab.type_widget.set(detector_tab)
+    gui.setup_tab.detector_tab.on_type_change()
 
-    for scatterer_str, detector_str in scatt_det_combinations:
-        # Set up the tabs
-        gui.tab_setup.scatterer_tab.type_widget.set(scatterer_str)
-        gui.tab_setup.scatterer_tab.on_type_change()
+    # The widgets collections
+    source_widgets = gui.setup_tab.source_tab.widget_collection
+    scatterer_widgets = gui.setup_tab.scatterer_tab.widget_collection
+    detector_widgets = gui.setup_tab.detector_tab.widget_collection
 
-        gui.tab_setup.detector_tab.type_widget.set(detector_str)
-        gui.tab_setup.detector_tab.on_type_change()
+    possible_widgets = [
+        source_widgets['wavelength'],
+        scatterer_widgets['medium_index'],
+        detector_widgets['NA'],
+        detector_widgets['gamma_offset'],
+        detector_widgets['polarization_filter']
+    ]
 
-        # The widgets
-        scatterer_widgets = gui.tab_setup.scatterer_tab.widget_collection
-        detector_widgets = gui.tab_setup.detector_tab.widget_collection
-
-        possible_widgets = [
-            source_widgets['wavelength'],
-            scatterer_widgets['medium_index'],
-            detector_widgets['NA']
-        ]
-
-        calculate_and_reset_button(gui=gui, possible_widgets=possible_widgets)
-
+    # Run the test
+    calculate_and_reset_button(gui=gui, possible_widgets=possible_widgets)
 
     root.destroy()
 
