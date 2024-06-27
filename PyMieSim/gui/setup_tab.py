@@ -107,7 +107,7 @@ class SetUp:
         # Defining the axis'
         self.x_axis = datashelf.x_axis_label_widget.get()
         self.std_axis = datashelf.STD_axis_label_widget.get()
-        self.y_axis_selection = self.axis_tab.get_inputs()[0]
+        self.y_axis_selection = datashelf.y_axis_selection.get()
 
         # Checking if axis selection is valid
         validation = self.validate_axis_choice()
