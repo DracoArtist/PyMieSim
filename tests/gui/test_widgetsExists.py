@@ -32,13 +32,13 @@ def test_input_widgets_exist(**kwargs):
 
     assert len(setup_tab.source_tab.widget_collection.widgets) == 4, 'Missing widgets in the source_tab'
 
-    for tab, widget_count in zip(setup_tab.scatterer_tab.type_widget['values'], [3, 3, 5]):
-        setup_tab.scatterer_tab.type_widget.set(tab)
+    for tab, widget_count in zip(setup_tab.scatterer_tab.type_widget.tk_widget['values'], [3, 3, 5]):
+        setup_tab.scatterer_tab.type_widget.tk_widget.set(tab)
         setup_tab.scatterer_tab.on_type_change()
         assert len(setup_tab.scatterer_tab.widget_collection.widgets) == widget_count, f'Missing widget in the source/{tab} tab'
 
-    for tab, widget_count in zip(setup_tab.detector_tab.type_widget['values'], [5, 8]):
-        setup_tab.detector_tab.type_widget.set(tab)
+    for tab, widget_count in zip(setup_tab.detector_tab.type_widget.tk_widget['values'], [5, 8]):
+        setup_tab.detector_tab.type_widget.tk_widget.set(tab)
         setup_tab.detector_tab.on_type_change()
         assert len(setup_tab.detector_tab.widget_collection.widgets) == widget_count, f'Missing widget in the detector/{tab} tab'
 

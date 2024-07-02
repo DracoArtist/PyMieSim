@@ -64,8 +64,8 @@ def test_source_widgets(setup_tab, gui) -> None:
 
 @set_up_gui
 def test_scatterer_widgets(setup_tab, gui) -> None:
-    for tab in setup_tab.scatterer_tab.type_widget['values']:
-        setup_tab.scatterer_tab.type_widget.set(tab)
+    for tab in setup_tab.scatterer_tab.type_widget.tk_widget['values']:
+        setup_tab.scatterer_tab.type_widget.tk_widget.set(tab)
         setup_tab.scatterer_tab.on_type_change()
         widgets = setup_tab.scatterer_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets, gui=gui)
@@ -73,8 +73,8 @@ def test_scatterer_widgets(setup_tab, gui) -> None:
 
 @set_up_gui
 def test_detector_widgets(setup_tab, gui) -> None:
-    for tab in setup_tab.detector_tab.type_widget['values']:
-        setup_tab.detector_tab.type_widget.set(tab)
+    for tab in setup_tab.detector_tab.type_widget.tk_widget['values']:
+        setup_tab.detector_tab.type_widget.tk_widget.set(tab)
         setup_tab.detector_tab.on_type_change()
         widgets = setup_tab.detector_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets, gui=gui)

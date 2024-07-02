@@ -57,10 +57,10 @@ def test_in_all_combination_of_widgets(scatterer_tab, detector_tab, measure):
     gui.setup_tab.axis_tab.widget_collection.widgets[0].tk_widget.set(measure)
 
     # Set up the tabs
-    gui.setup_tab.scatterer_tab.type_widget.set(scatterer_tab)
+    gui.setup_tab.scatterer_tab.type_widget.tk_widget.set(scatterer_tab)
     gui.setup_tab.scatterer_tab.on_type_change()
 
-    gui.setup_tab.detector_tab.type_widget.set(detector_tab)
+    gui.setup_tab.detector_tab.type_widget.tk_widget.set(detector_tab)
     gui.setup_tab.detector_tab.on_type_change()
 
     # The widgets collections

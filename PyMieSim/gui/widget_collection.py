@@ -38,6 +38,12 @@ class WidgetCollection:
 
         self.widgets = widgets
 
+    def setup_combobox_widget(self, tab: str, component: str):
+        self.combobox_widget = widget_dock[tab][component][0]
+        self.combobox_widget.frame = self.frame
+        self.combobox_widget.setup()
+        return self.combobox_widget
+
     def to_component_dict(self) -> Dict[str, float | str]:
         """
         Creates a dictionary mapping component labels to their respective widget values.
