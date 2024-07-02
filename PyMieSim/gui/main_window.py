@@ -47,33 +47,19 @@ class PyMieSimGUI:
         plt.close('all')  # Close all matplotlib figures
         self.master.destroy()  # Close the Tkinter window
 
-    @property
-    def axis_mapping(self) -> Dict[str, str]:
-        """
-        Combines mappings from all other tabs to provide a comprehensive dictionary of available axis options.
-
-        Returns:
-            Dict[str, str]: A dictionary mapping UI labels to internal scatterer parameter names.
-        """
-        _axis_mapping = {}
-        for tab in [datashelf.source_tab, datashelf.detector_tab, datashelf.scatterer_tab]:
-            _axis_mapping.update(tab.component.mapping)
-
-        return _axis_mapping
-
     # The following section of the class will setup the notebooks and their content
     def setup_notebook(self) -> NoReturn:
         """
         Sets up the notebook widget with tabs for Source, Scatterer, and Detector configurations.
         """
-        self.notebook = ttk.Notebook(self.master)
-        self.notebook.grid(row=0, column=0, sticky="ewns")
+        self.component_notebook = ttk.Notebook(self.master)
+        self.component_notebook.grid(row=0, column=0, sticky="ewns")
 
-        self.notebook_2 = ttk.Notebook(self.master)
-        self.notebook_2.grid(row=2, column=0, sticky="ewns")
+        self.axis_notebook= ttk.Notebook(self.master)
+        self.axis_notebook.grid(row=2, column=0, sticky="ewns")
 
-        self.controls_frame = ttk.Frame(self.master)
-        self.controls_frame.grid(row=1, column=0, sticky="ew")
+        self.controls_notebook = ttk.Frame(self.master)
+        self.controls_notebook.grid(row=1, column=0, sticky="ew")
 
         # Create tab instances, in datashelf, for easy access by other classes
         datashelf.axis_tab = AxisTab(

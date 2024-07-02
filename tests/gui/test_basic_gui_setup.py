@@ -39,8 +39,9 @@ def test_setup_notebook(**kwargs):
     This test ensures that the setup_notebook method of PyMieSimGUI has created an instance of all the following classes.
     """
     gui = kwargs['gui']
-    assert gui.notebook.__class__ == Notebook
-    assert gui.notebook_2.__class__ == Notebook
+    assert gui.component_notebook.__class__ == Notebook
+    assert gui.axis_notebook.__class__ == Notebook
+    assert gui.controls_notebook.__class__ == Notebook
     assert datashelf.source_tab.__class__ == PyMieSim.gui.source_tab.SourceTab
     assert datashelf.detector_tab.__class__ == PyMieSim.gui.detector_tab.DetectorTab
     assert datashelf.scatterer_tab.__class__ == PyMieSim.gui.scatterer_tab.ScattererTab

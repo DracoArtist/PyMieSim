@@ -17,6 +17,17 @@ from PyMieSim.gui.widget_collection import WidgetCollection
 
 
 class ControlTab:
+    """
+    This class is defines and handles the control buttons. It define the following:
+        -calculate_button: used to produce a graph
+        -save_button: used to save the data from the graph as a csv fils
+        -export_button: used to export the graph
+        -reset_std_button: used to undo the std axis selection on the gui
+    
+    Other attributes:
+    -frame (ttk.Frame)
+    """
+
     def __init__(self, frame: Frame) -> None:
         self.frame = frame
         self.setup_widgets()
