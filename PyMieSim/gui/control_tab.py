@@ -1,56 +1,120 @@
-from tkinter.ttk import Button, Frame
-from tkinter import messagebox
-import tkinter
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+
+from tkinter.ttk import Frame
+from tkinter import messagebox, filedialog
+import tkinter
+import numpy
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
-from typing import NoReturn
+from typing import NoReturn, Dict
 
 from PyMieSim.gui.singleton import datashelf
 from PyMieSim.experiment import Setup
+from PyMieSim.gui.widget_collection import WidgetCollection
 
 
-class ControlButton:
-    def __init__(self, frame: Frame, text: str, style: str, command: str) -> None:
+class ControlTab:
+    def __init__(self, frame: Frame) -> None:
         self.frame = frame
-        self.text = text
-        self.style = style
-        self.command = command
+        self.setup_widgets()
 
-        self.button = Button(
-            self.frame,
-            text=self.text,
-            style=self.style,
-            command=self.setup_command()
-        )
+    @property
+    def axis_mapping(self) -> Dict[str, str]:
+        """
+        Combines mappings from all other tabs to provide a comprehensive dictionary of available axis options.
 
-    def setup_command(self):
-        match self.command:
-            case "calculate":
-                self.calculate()
+        Returns:
+            Dict[str, str]: A dictionary mapping UI labels to internal scatterer parameter names.
+        """
+        _axis_mapping = {}
+        for tab in [datashelf.source_tab, datashelf.detector_tab, datashelf.scatterer_tab]:
+            _axis_mapping.update(tab.component.mapping)
 
-            # case "export":
-            #     self.export()
+        return _axis_mapping
 
-            # case "save":
-            #     self.save()
+    def setup_widgets(self):
+        self.button_config = {
+            "calculate_button": self.calculate_plot,
+            "save_button": self.save_data_as_csv,
+            "export_button": self.export_plot,
+            "reset_std_button": self.reset_STDaxis_selection
+        }
 
-            # case "reset":
-            #     self.reset()
+        self.widget_collection = WidgetCollection(frame=self.frame)
+
+        self.widget_collection.setup_control_widget(config=self.button_config)
+
+        for widget in self.widget_collection.widgets:
+            setattr(self, widget.component_label, widget)
+
+        print(self.calculate_button.__class__)
+
+    def save_data_as_csv(self) -> NoReturn:
+        """
+        Triggered by the "Save as CSV" button. Opens a file dialog to save the computed data as a CSV file.
+        """
+
+        if hasattr(datashelf, 'data'):
+            self.filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+            if self.filepath:
+
+                # Assuming datashelf.data is a pandas DataFrame or can be converted to one
+                numpy.savetxt(self.filepath, datashelf.data.y.values.squeeze(), delimiter=",")
+                print(f"Data saved to {self.filepath}")
+        else:
+            print("No data to save. Please calculate first.")
+
+    def export_plot(self) -> NoReturn:
+        """
+        Opens a file dialog for the user to choose where to save the current plot,
+        then saves the plot to the specified location.
+        """
+        # Ensure there's a plot to save
+        if hasattr(datashelf, 'figure'):
+            # Open file dialog to choose file name and type
+            filetypes = [
+                ('PNG files', '*.png'),
+                ('JPEG files', '*.jpg;*.jpeg'),
+                ('PDF files', '*.pdf'),
+                ('SVG files', '*.svg'),
+                ('All files', '*.*')
+            ]
+
+            self.filepath = filedialog.asksaveasfilename(
+                defaultextension=".png",
+                filetypes=filetypes,
+                title="Save plot as..."
+            )
+
+            # If a file was selected (i.e., dialog not cancelled)
+            if self.filepath:
+                # Save the figure using matplotlib's savefig
+                datashelf.figure.savefig(self.filepath)
+                messagebox.showinfo("Export Successful", f"Plot successfully saved to {self.filepath}")
+        else:
+            messagebox.showwarning("Export Failed", "No plot available to export.")
+
+    def reset_STDaxis_selection(self):
+        """
+        Allows the user to unselect the std-axis radiobuttons.
+        """
+        datashelf.STD_axis_label_widget.set(None)
 
     def setup_experiment(self) -> NoReturn:
         """
         Compute the B1 scattering data using either a single diameter or a range of diameters.
         """
-        self.scatterer_tab.setup_component()
-        self.source_tab.setup_component()
-        self.detector_tab.setup_component()
+        datashelf.scatterer_tab.setup_component()
+        datashelf.source_tab.setup_component()
+        datashelf.detector_tab.setup_component()
 
         self.experiment = Setup(
-            scatterer=self.scatterer_tab.component,
-            source=self.source_tab.component,
-            detector=self.detector_tab.component
+            scatterer=datashelf.scatterer_tab.component,
+            source=datashelf.source_tab.component,
+            detector=datashelf.detector_tab.component
         )
 
     def validate_axis_choice(self):
@@ -65,7 +129,7 @@ class ControlButton:
 
         return True
 
-    def calculate(self):
+    def calculate_plot(self) -> NoReturn:
         # Closing all previous plots
         plt.close('all')
 
@@ -77,7 +141,7 @@ class ControlButton:
         # Checking if axis selection is valid
         validation = self.validate_axis_choice()
         if validation is not True:
-            self.messagebox = messagebox.showerror(title="error", message=validation, parent=self.master)
+            self.messagebox = messagebox.showerror(title="error", message=validation, parent=self.frame)
             raise ValueError(validation)
 
         # Setting up the data and the components
@@ -105,7 +169,7 @@ class ControlButton:
             self.new_window.destroy()
 
         # Creates a tk window for the plot
-        self.new_window = tkinter.Toplevel(self.master)
+        self.new_window = tkinter.Toplevel(self.frame)
         self.new_window.title("Plot Window")
 
         # Renders the figure

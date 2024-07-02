@@ -1,4 +1,8 @@
-from PyMieSim.gui.widgets import InputWidget, RadioButtonWidget, ComBoxWidget
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+from PyMieSim.gui.widgets import InputWidget, RadioButtonWidget, ComBoxWidget, ControlWidget
 from PyMieSim.gui.singleton import datashelf
 
 widget_dock = {
@@ -58,5 +62,11 @@ widget_dock = {
         'y_axis': [
             ComBoxWidget(label='y-axis', component_label='y_axis', options=list(datashelf.measure_map.keys()), default_options=len(list(datashelf.measure_map.keys())) - 1),
         ]
-    }
+    },
+    'control_tab': [
+        ControlWidget(label='Calculate'),
+        ControlWidget(label='Save as CSV'),
+        ControlWidget(label='Export Plot'),
+        ControlWidget(label='Reset STD-axis')
+    ]
 }

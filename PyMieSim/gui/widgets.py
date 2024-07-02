@@ -4,6 +4,7 @@
 from typing import Union, NoReturn, List
 import numpy
 import tkinter
+from tkinter.ttk import Button
 
 from PyMieSim.gui.singleton import datashelf
 
@@ -212,5 +213,37 @@ class InputWidget(BaseWidget):
         if self.can_be_axis:
             self.tk_radio_button_1.destroy()
             self.tk_radio_button_2.destroy()
+
+
+class ControlWidget():
+    """
+    Buttons that will allow the user to calculate the simulation, save it,
+    export it and reset their std-axis selection.
+
+    Attribute:
+    frame (ttk.Frame): given in WidgetCollection
+    command (method from ControlTab): given in WidgetCollection
+    component_label (str): given in WidgetCollection
+    label (str): the name of the button
+    style (str): the style of the button
+    """
+    def __init__(self, label: str, style: str = "Large.TButton") -> None:
+        self.label = label
+        self.style = style
+
+    def __repr__(self) -> str:
+        return f"Widget(label={self.label})"
+
+    def setup(self, column):
+        self.button = Button(
+            self.frame,
+            text=self.label,
+            style=self.style,
+            command=self.command
+        )
+        self.button.grid(row=0, column=column, sticky='ew')
+
+    def invoke(self):
+        self.button.invoke()
 
 # -

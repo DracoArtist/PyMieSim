@@ -14,8 +14,8 @@ measures = ['Qsca', 'Csca', 'Qabs', 'coupling']  # A selection of measures to te
 
 
 @patch('tkinter.messagebox.showerror')
-@patch('PyMieSim.gui.main_window.PyMieSimGUI.generate_figure')
-def calculate_and_reset_button(mock_plot, mock_message_box, gui, possible_widgets):
+@patch('PyMieSim.gui.control_tab.ControlTab.generate_figure')
+def calculate_and_reset_button(mock_plot, mock_message_box, possible_widgets):
     """
     This function ensures that the calculate button generates a graph for
     all possible x-axis vues, along with some combination of random std-axis values.
@@ -28,15 +28,15 @@ def calculate_and_reset_button(mock_plot, mock_message_box, gui, possible_widget
             continue
 
         x_widget.tk_radio_button_1.invoke()
-        gui.calculate_button.invoke()
+        datashelf.control_tab.calculate_button.invoke()
 
         assert mock_plot.call_count == 1, f"calculate_button with x-axis selection '{x_widget.tk_radio_button_1['value']}' did not call the draw"
 
         std_widget.tk_radio_button_2.invoke()
-        gui.calculate_button.invoke()
+        datashelf.control_tab.calculate_button.invoke()
 
-        gui.reset_std_button.invoke()
-        assert datashelf.STD_axis_label_widget.get() == 'None', f"reset button did not worlkfor {widget.tk_radio_button_2['value']} widget"
+        datashelf.control_tab.reset_std_button.invoke()
+        assert datashelf.STD_axis_label_widget.get() == 'None', f"reset button did not worlkfor {std_widget.tk_radio_button_2['value']} widget"
 
 
 @pytest.mark.parametrize('measure', measures)
@@ -51,22 +51,22 @@ def test_in_all_combination_of_widgets(scatterer_tab, detector_tab, measure):
     # Setting up the GUI
     root = tkinter.Tk()
     root.geometry("750x600")
-    gui = PyMieSimGUI(root)
+    PyMieSimGUI(root)
 
     # Choose the correct measure (i.e. y-axis)
-    gui.axis_tab.widget_collection.widgets[0].tk_widget.set(measure)
+    datashelf.axis_tab.widget_collection.widgets[0].tk_widget.set(measure)
 
     # Set up the tabs
-    gui.scatterer_tab.type_widget.tk_widget.set(scatterer_tab)
-    gui.scatterer_tab.on_type_change()
+    datashelf.scatterer_tab.type_widget.tk_widget.set(scatterer_tab)
+    datashelf.scatterer_tab.on_type_change()
 
-    gui.detector_tab.type_widget.tk_widget.set(detector_tab)
-    gui.detector_tab.on_type_change()
+    datashelf.detector_tab.type_widget.tk_widget.set(detector_tab)
+    datashelf.detector_tab.on_type_change()
 
     # The widgets collections
-    source_widgets = gui.source_tab.widget_collection
-    scatterer_widgets = gui.scatterer_tab.widget_collection
-    detector_widgets = gui.detector_tab.widget_collection
+    source_widgets = datashelf.source_tab.widget_collection
+    scatterer_widgets = datashelf.scatterer_tab.widget_collection
+    detector_widgets = datashelf.detector_tab.widget_collection
 
     possible_widgets = [
         source_widgets['wavelength'],
@@ -77,7 +77,7 @@ def test_in_all_combination_of_widgets(scatterer_tab, detector_tab, measure):
     ]
 
     # Run the test
-    calculate_and_reset_button(gui=gui, possible_widgets=possible_widgets)
+    calculate_and_reset_button(possible_widgets=possible_widgets)
 
     root.destroy()
 
