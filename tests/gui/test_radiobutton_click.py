@@ -17,7 +17,7 @@ def set_up_gui(foo):
         root.geometry("750x600")
         gui = PyMieSimGUI(root)
 
-        foo(setup_tab=gui.setup_tab, gui=gui)
+        foo(gui=gui)
 
         root.destroy()
 
@@ -47,7 +47,7 @@ def radio_button_invoke(mock, widgets: list, gui) -> None:
             radio_button_x_axis.invoke()
             radio_button_STD_axis.invoke()
             with raises(ValueError):
-                gui.setup_tab.calculate_plot()
+                gui.calculate_plot()
 
 
 """
@@ -57,24 +57,24 @@ radio buttons of the GUI is possible and if the variables self.STD_axis_label_wi
 
 
 @set_up_gui
-def test_source_widgets(setup_tab, gui) -> None:
-    widgets = setup_tab.source_tab.widget_collection.widgets
+def test_source_widgets(gui) -> None:
+    widgets = gui.source_tab.widget_collection.widgets
     radio_button_invoke(widgets=widgets, gui=gui)
 
 
 @set_up_gui
-def test_scatterer_widgets(setup_tab, gui) -> None:
-    for tab in setup_tab.scatterer_tab.type_widget.tk_widget['values']:
-        setup_tab.scatterer_tab.type_widget.tk_widget.set(tab)
-        setup_tab.scatterer_tab.on_type_change()
-        widgets = setup_tab.scatterer_tab.widget_collection.widgets
+def test_scatterer_widgets(gui) -> None:
+    for tab in gui.scatterer_tab.type_widget.tk_widget['values']:
+        gui.scatterer_tab.type_widget.tk_widget.set(tab)
+        gui.scatterer_tab.on_type_change()
+        widgets = gui.scatterer_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets, gui=gui)
 
 
 @set_up_gui
-def test_detector_widgets(setup_tab, gui) -> None:
-    for tab in setup_tab.detector_tab.type_widget.tk_widget['values']:
-        setup_tab.detector_tab.type_widget.tk_widget.set(tab)
-        setup_tab.detector_tab.on_type_change()
-        widgets = setup_tab.detector_tab.widget_collection.widgets
+def test_detector_widgets(gui) -> None:
+    for tab in gui.detector_tab.type_widget.tk_widget['values']:
+        gui.detector_tab.type_widget.tk_widget.set(tab)
+        gui.detector_tab.on_type_change()
+        widgets = gui.detector_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets, gui=gui)

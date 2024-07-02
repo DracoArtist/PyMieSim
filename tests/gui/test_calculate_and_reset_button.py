@@ -14,11 +14,11 @@ measures = ['Qsca', 'Csca', 'Qabs', 'coupling']  # A selection of measures to te
 
 
 @patch('tkinter.messagebox.showerror')
-@patch('PyMieSim.gui.setup_tab.SetUp.generate_figure')
+@patch('PyMieSim.gui.main_window.PyMieSimGUI.generate_figure')
 def calculate_and_reset_button(mock_plot, mock_message_box, gui, possible_widgets):
     """
     This function ensures that the calculate button generates a graph for
-    all possible x-axis values, along with some combination of random std-axis values.
+    all possible x-axis vues, along with some combination of random std-axis values.
     It does not test for all possible combinations of x and std axis due to computational time constraints.
     """
     for (x_widget, std_widget) in itertools.combinations(possible_widgets, 2):
@@ -54,19 +54,19 @@ def test_in_all_combination_of_widgets(scatterer_tab, detector_tab, measure):
     gui = PyMieSimGUI(root)
 
     # Choose the correct measure (i.e. y-axis)
-    gui.setup_tab.axis_tab.widget_collection.widgets[0].tk_widget.set(measure)
+    gui.axis_tab.widget_collection.widgets[0].tk_widget.set(measure)
 
     # Set up the tabs
-    gui.setup_tab.scatterer_tab.type_widget.tk_widget.set(scatterer_tab)
-    gui.setup_tab.scatterer_tab.on_type_change()
+    gui.scatterer_tab.type_widget.tk_widget.set(scatterer_tab)
+    gui.scatterer_tab.on_type_change()
 
-    gui.setup_tab.detector_tab.type_widget.tk_widget.set(detector_tab)
-    gui.setup_tab.detector_tab.on_type_change()
+    gui.detector_tab.type_widget.tk_widget.set(detector_tab)
+    gui.detector_tab.on_type_change()
 
     # The widgets collections
-    source_widgets = gui.setup_tab.source_tab.widget_collection
-    scatterer_widgets = gui.setup_tab.scatterer_tab.widget_collection
-    detector_widgets = gui.setup_tab.detector_tab.widget_collection
+    source_widgets = gui.source_tab.widget_collection
+    scatterer_widgets = gui.scatterer_tab.widget_collection
+    detector_widgets = gui.detector_tab.widget_collection
 
     possible_widgets = [
         source_widgets['wavelength'],
