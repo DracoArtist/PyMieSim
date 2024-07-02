@@ -57,11 +57,11 @@ class ComBoxWidget(BaseWidget):
     def setup(self, row: int = 0):
         # Sets up an attribute to datashelf that will hold the curent value of the combobox, for easy acces
         setattr(datashelf, f"{self.component_label}_selection", tkinter.StringVar(value=self.options[self.default_options]))
-        self.textvariable = getattr(datashelf, f"{self.component_label}_selection")
+        self.text_variable = getattr(datashelf, f"{self.component_label}_selection")
 
         # Sets up the Combobox
         self.tk_label = tkinter.Label(self.frame, text=self.label)
-        self.tk_widget = tkinter.ttk.Combobox(self.frame, values=self.options, textvariable=self.textvariable)
+        self.tk_widget = tkinter.ttk.Combobox(self.frame, values=self.options, textvariable=self.text_variable)
         self.tk_widget.current(self.default_options)
 
         self.tk_widget.grid(row=row, column=1)
