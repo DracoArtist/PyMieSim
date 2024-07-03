@@ -22,7 +22,7 @@ class DataShelf:
         self.measure_map = scatterer.Sphere.available_measure_list
 
 
-# Instantiates the singleton. This instance is used throughout the rest of the code.
+# Instantiates the singleton. This is the only instance used throughout the rest of the code.
 datashelf = DataShelf()
 
 # -

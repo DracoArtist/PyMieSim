@@ -64,8 +64,8 @@ def test_source_widgets() -> None:
 
 @set_up_gui
 def test_scatterer_widgets() -> None:
-    for tab in datashelf.scatterer_tab.type_widget.tk_widget['values']:
-        datashelf.scatterer_tab.type_widget.tk_widget.set(tab)
+    for tab in datashelf.scatterer_tab.combobox_widget_collection.combobox_widget.tk_widget['values']:
+        datashelf.scatterer_tab.combobox_widget_collection.combobox_widget.tk_widget.set(tab)
         datashelf.scatterer_tab.on_type_change()
         widgets = datashelf.scatterer_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets)
@@ -73,8 +73,8 @@ def test_scatterer_widgets() -> None:
 
 @set_up_gui
 def test_detector_widgets() -> None:
-    for tab in datashelf.detector_tab.type_widget.tk_widget['values']:
-        datashelf.detector_tab.type_widget.tk_widget.set(tab)
+    for tab in datashelf.detector_tab.combobox_widget_collection.combobox_widget.tk_widget['values']:
+        datashelf.detector_tab.combobox_widget_collection.combobox_widget.tk_widget.set(tab)
         datashelf.detector_tab.on_type_change()
         widgets = datashelf.detector_tab.widget_collection.widgets
         radio_button_invoke(widgets=widgets)

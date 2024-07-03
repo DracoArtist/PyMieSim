@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from tkinter.ttk import Frame
 from tkinter import messagebox, filedialog
 import tkinter
@@ -23,7 +22,7 @@ class ControlTab:
         -save_button: used to save the data from the graph as a csv fils
         -export_button: used to export the graph
         -reset_std_button: used to undo the std axis selection on the gui
-    
+
     Other attributes:
     -frame (ttk.Frame)
     """
@@ -47,6 +46,11 @@ class ControlTab:
         return _axis_mapping
 
     def setup_widgets(self):
+        """"
+        Creates the control buttons, and binds them to their specific command
+        """
+
+        # Dictonary with the following format: {"button_nam": button_command}
         self.button_config = {
             "calculate_button": self.calculate_plot,
             "save_button": self.save_data_as_csv,
@@ -56,12 +60,10 @@ class ControlTab:
 
         self.widget_collection = WidgetCollection(frame=self.frame)
 
-        self.widget_collection.setup_control_widget(config=self.button_config)
+        self.widget_collection.setup_control_widget(config_dict=self.button_config)
 
         for widget in self.widget_collection.widgets:
             setattr(self, widget.component_label, widget)
-
-        print(self.calculate_button.__class__)
 
     def save_data_as_csv(self) -> NoReturn:
         """

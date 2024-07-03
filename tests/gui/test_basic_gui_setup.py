@@ -1,7 +1,7 @@
 from pytest import raises
 from unittest.mock import patch
 import tkinter
-from tkinter.ttk import Notebook
+from tkinter.ttk import Notebook, Frame
 from PyMieSim.gui.main_window import PyMieSimGUI
 from PyMieSim.gui.singleton import datashelf
 import PyMieSim
@@ -41,7 +41,7 @@ def test_setup_notebook(**kwargs):
     gui = kwargs['gui']
     assert gui.component_notebook.__class__ == Notebook
     assert gui.axis_notebook.__class__ == Notebook
-    assert gui.controls_notebook.__class__ == Notebook
+    assert gui.control_frame.__class__ == Frame
     assert datashelf.source_tab.__class__ == PyMieSim.gui.source_tab.SourceTab
     assert datashelf.detector_tab.__class__ == PyMieSim.gui.detector_tab.DetectorTab
     assert datashelf.scatterer_tab.__class__ == PyMieSim.gui.scatterer_tab.ScattererTab

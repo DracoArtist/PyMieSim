@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
-from typing import NoReturn, Dict
+from typing import NoReturn
 import tkinter
 from tkinter import ttk
 import matplotlib.pyplot as plt
 
 from PyMieSim.gui.singleton import datashelf
-from PyMieSim.gui import SourceTab, ScattererTab, DetectorTab, AxisTab
-from PyMieSim.gui.control_tab import ControlTab
+from PyMieSim.gui import SourceTab, ScattererTab, DetectorTab, AxisTab, ControlTab
 
 
 class PyMieSimGUI:
@@ -36,7 +35,6 @@ class PyMieSimGUI:
         datashelf.STD_axis_label_widget = tkinter.StringVar(value=None)
         datashelf.STD_axis_label_widget.set(None)
 
-        self.link_radio_button = "link"
         self.customize_notebook_style()
         self.setup_notebook()
 
@@ -55,35 +53,35 @@ class PyMieSimGUI:
         self.component_notebook = ttk.Notebook(self.master)
         self.component_notebook.grid(row=0, column=0, sticky="ewns")
 
-        self.axis_notebook= ttk.Notebook(self.master)
+        self.axis_notebook = ttk.Notebook(self.master)
         self.axis_notebook.grid(row=2, column=0, sticky="ewns")
 
-        self.controls_notebook = ttk.Frame(self.master)
-        self.controls_notebook.grid(row=1, column=0, sticky="ew")
+        self.control_frame = ttk.Frame(self.master)
+        self.control_frame.grid(row=1, column=0, sticky="ew")
 
         # Create tab instances, in datashelf, for easy access by other classes
         datashelf.axis_tab = AxisTab(
-            notebook=self.notebook_2,
+            notebook=self.axis_notebook,
             label='Axis Configuration'
         )
 
         datashelf.control_tab = ControlTab(
-            frame=self.controls_frame,
+            frame=self.control_frame,
         )
 
         datashelf.source_tab = SourceTab(
-            notebook=self.notebook,
+            notebook=self.component_notebook,
             label='Source'
         )
 
         datashelf.scatterer_tab = ScattererTab(
-            notebook=self.notebook,
+            notebook=self.component_notebook,
             label='Scatterer',
             axis_tab=datashelf.axis_tab
         )
 
         datashelf.detector_tab = DetectorTab(
-            notebook=self.notebook,
+            notebook=self.component_notebook,
             label='Detector'
         )
 

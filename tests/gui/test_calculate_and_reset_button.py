@@ -57,10 +57,10 @@ def test_in_all_combination_of_widgets(scatterer_tab, detector_tab, measure):
     datashelf.axis_tab.widget_collection.widgets[0].tk_widget.set(measure)
 
     # Set up the tabs
-    datashelf.scatterer_tab.type_widget.tk_widget.set(scatterer_tab)
+    datashelf.scatterer_tab.combobox_widget_collection.combobox_widget.tk_widget.set(scatterer_tab)
     datashelf.scatterer_tab.on_type_change()
 
-    datashelf.detector_tab.type_widget.tk_widget.set(detector_tab)
+    datashelf.detector_tab.combobox_widget_collection.combobox_widget.tk_widget.set(detector_tab)
     datashelf.detector_tab.on_type_change()
 
     # The widgets collections

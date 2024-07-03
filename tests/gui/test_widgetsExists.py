@@ -31,13 +31,13 @@ def test_input_widgets_exist():
 
     assert len(datashelf.source_tab.widget_collection.widgets) == 4, 'Missing widgets in the source_tab'
 
-    for tab, widget_count in zip(datashelf.scatterer_tab.type_widget.tk_widget['values'], [3, 3, 5]):
-        datashelf.scatterer_tab.type_widget.tk_widget.set(tab)
+    for tab, widget_count in zip(datashelf.scatterer_tab.combobox_widget_collection.combobox_widget.tk_widget['values'], [3, 3, 5]):
+        datashelf.scatterer_tab.combobox_widget_collection.combobox_widget.tk_widget.set(tab)
         datashelf.scatterer_tab.on_type_change()
         assert len(datashelf.scatterer_tab.widget_collection.widgets) == widget_count, f'Missing widget in the source/{tab} tab'
 
-    for tab, widget_count in zip(datashelf.detector_tab.type_widget.tk_widget['values'], [5, 8]):
-        datashelf.detector_tab.type_widget.tk_widget.set(tab)
+    for tab, widget_count in zip(datashelf.detector_tab.combobox_widget_collection.combobox_widget.tk_widget['values'], [5, 8]):
+        datashelf.detector_tab.combobox_widget_collection.combobox_widget.tk_widget.set(tab)
         datashelf.detector_tab.on_type_change()
         assert len(datashelf.detector_tab.widget_collection.widgets) == widget_count, f'Missing widget in the detector/{tab} tab'
 

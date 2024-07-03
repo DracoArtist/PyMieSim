@@ -60,11 +60,11 @@ class ScattererTab(BaseTab):
         Sets up a combobox for selecting the type of scatterer. It provides options for Sphere, Cylinder,
         or CoreShell configurations.
         """
-        self.combox_widget_collection = WidgetCollection(frame=self.frame)
+        self.combobox_widget_collection = WidgetCollection(frame=self.frame)
 
-        self.type_widget = self.combox_widget_collection.setup_combobox_widget(tab='scatterer_tab', component='Combox')
+        self.combobox_widget_collection.setup_combobox_widget(tab='scatterer_tab', component='Combox')
 
-        self.type_widget.tk_widget.bind("<<ComboboxSelected>>", self.on_type_change)
+        self.combobox_widget_collection.combobox_widget.tk_widget.bind("<<ComboboxSelected>>", self.on_type_change)
 
     def on_type_change(self, event=None) -> NoReturn:
         """
